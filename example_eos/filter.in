@@ -1,0 +1,14 @@
+4
+AAAB
+10 10 5 3
+80 0.024d0 10.0d0
+80 0.10d0 20.0d0
+365.25d0
+bin.filter.dat
+T	! write real*8 bin.dat output of osculating elements? [T|F] (useful for precise restart)
+F       ! write real*4 bin.filter.dat of mean elements? [T|F] (could be turned-off, eg. for the computation of `proper' resonant elements)
+F	! write real*8 bin.filter.dat output of mean elements instead of real*4? [T|F]
+-2      ! planet identification for the computation of the slow variable sigma = (p+q)/q*lambda_PL - p/q*lambda_TP - varpi_TP
+2       ! p
+1       ! q
+

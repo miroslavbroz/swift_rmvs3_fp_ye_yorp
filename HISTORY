@@ -1,0 +1,88 @@
+Oct 8th 2013
+	A public up-to-date (!) documentation was created for all
+        new parts of the code.
+
+2011-2012
+        The YORP-effect evolution of the spin axis was also added.
+        (It should be now possible to fit the "ears" of asteroid families
+        on their semimajor axis a vs absolute magnitude H plots.)
+
+Apr 30th 2008
+	There was an error in prop_sigma2.f - averiging was over the
+	entire integration, not only over the limited window.
+
+Feb 14th 2008
+	A rewrite of the code, the files were put in different
+	directories, the Makefile was modified accordingly.
+
+Jul 25th 2006
+	io_write_filter.f routines now filter a user defined
+	slow variable: sigma = (p+q)/q*lambda_PL - p/q*lambda_TP
+	- varpi_TP. See the three new options in filter.in.
+	It is used also in io_write_proper.f (and modified
+	proper.in accordingly), to produce a nice smooth resonant
+	elements, especially suitable for Hildas, where large
+	oscillations exist with period shorter than that of libration.
+
+Nov 30th 2004
+	FMFT routines now calclulate also planetary frequencies
+	(what is necessary for the analyses of secular resonances).
+
+Dec 8th 2003
+	An important correction in FMFT filter of inclination
+	for the case, when filtering window was larger than output
+	timestep. A new option in proper.in, which switches
+	on automatic detection of interruptions (spaces)
+	in input buffer.
+
+Nov 11th 2003
+	A few options to proper elements filter were added -
+	a selection of proper frequencies by a given (narrower)
+	range of g and s and possibly a vectorial sum of all
+	valid frequencies.
+
+Sep 30th 2003
+	Corrected error in Makefile, which caused compilation
+	of the swift_mvs2_fp_y program without Yarkovsky acceleration.
+	An updated swiftcont script for restarts of SWIFT jobs.
+
+Jun 11th 2003
+	A new version of swiftcont script for an automatic restart
+	of SWIFT jobs.
+
+May 12th 2003
+	Calculate e, inc again from h,k,p,q, because proper elements
+        are calculted from these and we need proper elements
+	to be reproducible (!) by propoff program.
+
+Apr 23rd 2003
+	Statement save sigmalast, prop_elmts, prop_time was missing
+	in io_write_proper.f code! On SGI Irix architecture it lead
+	to incorrect output resonant elements. There was also an
+	interchanged real*4 and real*8 write in io_write_proper.f,
+	namely in filter type 4.
+
+Apr 9th 2003
+	Corrected declaration of istat(,) array in io_write_fmft.f.
+
+Apr 8th 2003
+	A new option in filter.in and proper.in files were added
+	- write real*8 bin.filter.dat and bin.proper.dat files.
+	Corresponding changes had to be made in io_init_filter.f,
+	io_write_filter.f, io_init_proper.f, io_write_proper.f.
+
+Apr 4th 2003
+	Driver files swift_*.f were renamed (according to a scheme
+        swift_integrator_filter_nongrav.forces).
+
+Mar 25th 2003
+	Corrected dimensions of Fortran arrays in fmft.c function.
+	(They should be EXACTLY the same as in `proper.inc' file.)
+
+Sep 20th 2000
+	io_write_filter.f: Changed the angle in the definition of
+	h, k from peri to varpi (which has a longer period of
+	circulation). I use a separate direct filtering of e, inc
+	instead of calculation from h,k,p,q.
+
+

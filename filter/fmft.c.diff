@@ -1,0 +1,8 @@
+77c77
+<   int *p_flag, double input[][MAX_FMFT_NDATA], long *p_ndata)
+---
+>   int *p_flag, double input[][MAX_FMFT_NDATA], int *p_ndata)
+120c120
+<   ndata = *p_ndata;
+---
+>   ndata = (long)*p_ndata;

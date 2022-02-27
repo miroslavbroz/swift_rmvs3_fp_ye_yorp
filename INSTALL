@@ -1,0 +1,37 @@
+
+First you MUST compile the original SWIFT package - get the swift.tar.gz
+file from the web site:
+
+http://www.boulder.swri.edu/~hal/swift.html
+
+uncompress it and follow the instructions in the README.first file therein.
+
+Uncompress the swift_mvs2_fp_ye_YORP.tar.gz package to a SEPARATE
+directory. You then need to copy or symlink the resulting libswift.a
+library to this directory (where the swift_mvs2_fp_ye_YORP source
+files are located).
+
+BEWARE! The swift.inc file included here should correspond to that
+of in the swift/ directory! CHECK CONSISTENCY, otherwise 'core dumps'
+may occur which is always unfortunate. Finally, check and possibly
+edit the Makefile and run:
+
+make
+
+The resulting executables are located in the main/ directory.
+
+Almost all code is written in FORTRAN77 language and thus it can be
+easily compiled for various platforms and operating systems. We provide
+a Makefile suitable for the GNU/Linux gcc compiler, but in the past,
+we compiled the integrator for other operating systems too.
+
+If something fails, you can try to copy the files into the original
+SWIFT directory and compile manually. However, this approach may
+somewhat "dangerous", because we had to modify some of the original
+subroutines.
+
+Secondly, one has to be careful when increasing the numbers
+(of objects) in swift.inc, because we need to allocate large arrays
+to accumulate orbital-elements data for the digital filters.
+
+

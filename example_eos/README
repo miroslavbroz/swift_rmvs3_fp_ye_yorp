@@ -1,0 +1,10 @@
+
+These input files were used to simulate the long-term evolution
+of the the Eos family (Broz & Morbidelli 2013).
+
+BEWARE! There was more than 6000 test particles in original input
+files, while there is only 2000 TPs in a standard swift.inc file.
+Anyway, that job was split (using scipts) to 33 subdirectories
+and then computed on 33 CPUs to save a (life) time...
+
+

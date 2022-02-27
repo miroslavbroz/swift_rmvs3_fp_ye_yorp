@@ -1,0 +1,422 @@
+
+README
+A documentation of the SWIFT_MVS2_FP_YE_YORP integrator.
+Miroslav Broz, miroslav.broz@email.cz, Oct 8th 2013
+http://sirrah.troja.mff.cuni.cz/~mira/mp/
+------------------------------------------------------------------------
+
+See the INSTALL file for the respective instructions.
+
+Please, see also the LICENSE file.
+
+This program is a numerical integrator based on the SWIFT package
+by M. Duncan and H. Levison. Our version of the swift_rmvs3 integrator
+is intended especially for applications in the Solar System
+- we modified the code in the following ways:
+
+1) We implemented the YARKOVSKY DIURNAL AND SEASONAL ACCELERATIONS
+   (as described in Broz et al. 2006).
+
+2) We added a (simple) Euler SPIN INTEGRATOR to simulate
+   a secular evolution due to the YORP EFFECT (Broz et al. 2011).
+
+   We try to account for a couple of other processes, namely:
+   random collisional reorientations, mass shedding (i.e. a spin
+   barrier effect). Note that we DO NOT account for spin-orbital
+   resonances here.
+
+2) We implemented ONLINE OUTPUT DIGITAL FILTER (based on Kaiser
+   windows, as described in Quinn et al. 1991) and added REAL*8
+   BINARY OUTPUT of osculating elements for precise restarts.
+
+3) We implemented 2ND ORDER SYMPLECTIC INTEGRATOR (by Laskar & Robutel,
+   2000), but without a regularization, i.e. NO CLOSE ENCOUNTERS.
+
+4) We partially PARALELLIZED the code of the SWIFT package (only
+   the part for TEST PARTICLES), according to the OpenMP standard
+   (http://www.openmp.org).
+
+
+The MVS2 integrator is at least twice faster than MVS, while keeping
+the same relative energy error (you can choose time-step 80-120 days
+for the main-belt orbits rather than usual 20 day for MVS).
+You can find results of several tests on the following URLs:
+
+http://sirrah.troja.mff.cuni.cz/yarko-site/integrator/test.html
+http://sirrah.troja.mff.cuni.cz/yarko-site/publications/acm02_mvs2.ps.gz
+
+
+EXAMPLES of input files (in the example/ directory)
+------------------------------------------------------------------------
+
+Please, read also original README.first from the SWIFT package.
+
+collision.in - parameters of the simple (Monte-Carlo) collisional model:
+
+     1.0d3		! reorientation time step [yr], set to >tstop to switch off the reorientation of TP's
+     84.5e3		! B [yr] in the relation: tau_reor = B (omega/omega_0)^beta_1 (D/D_0)^beta_2
+     0.83333		! beta_1 []
+     1.33333 		! beta_2 []
+     2.0d0		! D_0 [m]
+     3.4906585d-4	! omega_0 <=> P_0 = 5 hours
+     1.0d10		! disruption time step [yr], set to >tstop to switch off the disruption of TP's
+     16.79d6		! mean disruption time [yr]; particles ARE EXCLUDED from the integration!
+     1 1 1 1		! NPL Hill sphere scaling factors of PL's for RMVS3 subroutines (excluding the Sun)
+     2.5 9		! P_1, P_2 [hours]; interval of new periods after a reorientation (or exceeding of omega_crit)
+     -1 -1		! a1, a2 [AU]; if ((a.lt.a1).or.(a.gt.a2)) discard the TP, a is MEAN semimajor axis (depends on filtering - see filter.in), set a1 or a2 to -1 to ignore this check
+     T			! write reorient.out? [T|F] (but reorient them anyway)
+     T			! write disrupt.out? [T|F] (but disrupt them anyway)
+
+filter.in - MEAN elements on-line digital filter parameters:
+
+    4                       ! number of on-line filters
+    AAAB                    ! sequence of filters [A|B]
+    10 10 5 3               ! decimation factors
+    80 0.024d0 10.0d0       ! parameters m,x0,beta of filter A
+    80 0.10d0 20.0d0        ! the same for B
+    365.25d0                ! time step [day]
+    bin.filter.dat          ! filename of filtered binary file
+    T                       ! write real*8 bin.dat output of osculating   in.dat output of osculating elements? [T|F] (useful for precise restart)
+    F                       ! write real*4 elements? [T|F] (useful for precise restart)in.filter.dat of mean elements? [T|F] (could be turned-off, e.g. for the computation of `proper' resonant elements)
+    F	                    ! write real*8 bin.filter.dat output of mean elements instead of real*4? [T|F]
+    -2                      ! planet identification for the computation of the slow variable sigma = (p+q)/q*lambda_PL - p/q*lambda_TP - varpi_TP
+    2                       ! p
+    1                       ! q
+
+BEWARE! It is possible to encounter sever ALIASING problems
+when one uses improper decimation factors!
+
+
+proper.in - PROPER elements filter, which has a slightly different
+structure which may include comments (beginning with a hash #):
+
+    ## filename of output file
+    bin.proper.dat
+    
+    ## FILTER TYPE selection:
+    ## 0) switched off
+    ## 1) running average
+    ## 2) running minimum/maximum
+    ## 3) min. a/max. e
+    ## 4) a representative surface (suitable for resonances)
+    ## 6) dtto with mean elements
+    ## 5) frequency-modified Fourier transform = FMFT (really 5!)
+    5
+    
+    ## Write real*8 binary output instead of real*4? [T|F]
+    F
+    
+    ## sampling time-step should be an integer multiple of dtfilter!
+    ## (refer to filter.in file) - osculating elements are calculated
+    ## only every dtfilter (thus it is the maximum sampling rate)
+    -1	/* sampling time-step [day], set to -1 for equal to dtfilter */
+    
+    ## options for running-average filter
+    1.0 	/* width of running window [Myr] */
+    0.1  	/* output time-step [Myr] */
+    
+    ## options for running-minimum/maximum filter of the given elements,
+    ## the output of others is for the respective time of min./max. -
+    ## i.e. far from resonances, where a, e oscillations are NOT coupled,
+    ## it produces misleading results; the ABOVE running window options apply also!
+    1	/* orbital element to be monitored: 1 a, 2 e, 3 inc, 4 node, 5 peri */
+    T	/* T minimum, F maximum */
+
+    ## options for INDIVIDUAL minimum/maximum filter of a, e, i
+    ## (the above running window options apply also!)
+    F	/* semimajor axis - T minimum, F maximum */
+    F	/* eccentricty */
+    F	/* inclination */
+    
+    ## options for sigma & varpi-varpi_PL \simeq 0 filter (resonant elements)
+    ## a critical angle of an arbitrary resonance is:
+    ## sigma = (p+q)/q*lambda_PL - p/q*lambda_TP - varpi_TP
+    -2		/* identification of the planet (PL id) */
+    -1		/* p */
+    0		/* q */
+    60.		/* critical value of sigma [deg] */
+    1.		/* max. value of abs(sigma-sigma_crit) [deg] */
+    60.		/* critical value of varpi-varpi_PL */
+    5.		/* maximal difference from ^^^, set to -1 to switch the check off! */
+    180.	/* critical value of Omega-Omega_PL */
+    -1.		/* max. diff. from ^, set to -1 to switch the check off! */
+    -1		/* signum of d sigma/d t [-1|1], set to 0 to switch it off! */
+    
+    ## the representative surface filter of MEAN elements does NOT have
+    ## separate options - they have to be set up in the FILTER.IN file
+    ## (namely PL_id, p and q); the remaining critical values and max.
+    ## differences are taken above
+    
+    ## options for FMFT filter
+    2	/* the variant of frequency analysis, see fmft.c */   
+    10	/* number of computed frequencies */
+    512	/* number of used data, must be a power of 2! */ 
+    F	/* write `fmft.out' file with TPid, time, g and s frequencies (in arcsec/yr) */
+    
+    -1000.	/* minimum frequency (arcsec/yr), frequencies smaller than MIN_F are ignored */ 
+    1000.  	/* maximum frequency */ 
+    0.02	/* absolute value of the smallest allowed frequency */
+    0.05	/* allowed difference between calculated and plan. freq., see below */
+    7		/* number of (known, forced) planetary frequencies to be discarded */
+    
+      4.25749319    /* list of plan. freq.: g5 */
+     28.24552984    /* g6 */
+      3.08675577    /* g7 */
+      0.67255084    /* g8 */
+    -26.34496354    /* s6 */
+     -2.99266093    /* s7 */
+     -0.69251386    /* s8 */
+    
+    -1000.	/* minimum g frequency (arcsec/yr), otherwise, it is considered planetary */
+    1000.	/* maximum g */
+    -1000.	/* minimum s */
+    1000.	/* maximum s */
+    F       /* add vectorially all frequencies matching the above criteria */
+    F       /* drop intervals, where an interrupt (a longer time-step) occurs */
+    T       /* calculate also proper elements of planets */
+    F       /* write all frequencies, amplitudes and phases to `propgs.out' */
+    
+
+spin.in - spin vector orientations and spin rates:
+
+    2000							! the number of test particles (to check)
+    -1								! random seed (must be NEGATIVE!) for the random-number generator used in Monte Carlo codes (collisional reorientations, shape/torque changes, etc.)
+    1								! format of the following lines [0|1]
+      0.82594558   0.53949060   0.16359642  5.03968362e-04	! spin axis unitvector sx sy sz [] and spin rate omega [rad/s]
+     -0.93794723   0.29564022  -0.18125083  5.36515709e-04
+     -0.16033208   0.98666137  -0.02815970  3.80274057e-04
+    ...								! etc for all TPs
+
+
+swift_mvs2_fp_ye_yorp.in - standard input of the integrator (list of input files):
+
+    param.in
+    pl.in
+    tp.in
+    filter.in
+    proper.in
+    spin.in
+    yarko.in
+    yorp.in
+    collision.in
+
+
+yarko.in - thermal parameters of the test particles necessary
+to compute the Yarkovsky effect:
+
+    2000						! the number of test particles (to check)
+      51950.00 2500.0 1500.0 0.0010  680.0 0.10 0.90	! radius [m], bulk density [kg/m^3], surface density [kg/m^3], thermal conductivity K [W/m/K], thermal capacity C [J/kg/K], Bond albedo A [], infrared emissivity eps []
+      13455.00 2500.0 1500.0 0.0010  680.0 0.10 0.90
+      19100.00 2500.0 1500.0 0.0010  680.0 0.10 0.90
+    ...							! etc for all TPs
+
+
+yorp.in - parameters of the YORP effect calculation:
+
+    2000			! number of test particles (to check consistency)
+    1.0d3			! dt_YORP [yr]; time step for the YORP integrator
+    1.0d5			! dt_YORP_out [yr]; time step for the output (reorient.out)
+    200				! number of Gaussian spheres in fg_functions/ directory
+    7				! number of data points in each fg_functions/ file
+    30.0			! dobliq [deg], corresponding step in obliquity
+    2.5				! a_0 [AU] reference value of semimajor axis
+    1.0d3			! R_0 [m] reference radius
+    2500.d0			! rho_0 [kg/m^3] reference density
+    2.9088821d-4		! omega_0 [rad/s] reference spin rate <=> P_0 = 6 hours
+    0.33d0			! c_YORP efficiency parameter (see e.g. Hanus et al. 2013 for the calibration)
+    T                    	! change Gauss sphere randomly after reaching omega_crit
+    ../fg_functions_K1e-3/	! directory in which 200 *.y files (with YORP torques) are stored, conductivity K can be actually selected here
+    1	49			! TP identification number and its assigned Gaussian random sphere (from 1 to 200)
+    2	59
+    3	170
+    ...				! etc. for all remaining TPs
+
+
+param.in, pl.in, tp.in - The same input parameters as in the original SWIFT
+(units in these example files are GM, AU, AU/day and AU/day**2).
+
+BEWARE! It is important to use AU, AU/day and AU/day**2 UNITS,
+because we assume them in the Yarkovsky routines (where we convert
+to SI units)!
+
+
+
+OUTPUT FILES
+------------------------------------------------------------------------
+
+bin.dat - OSCULATING element output file.
+
+BEWARE! Might be in real*8 format, so to convert to ASCII you need
+to modify follow program (tools/follow2.f might be of help).
+
+BEWARE! When using old/new binary files or files computed on
+different architectures, one may encounter little/big endian
+inconsistency.
+
+
+bin.filter.dat - usual filename of the MEAN orbital elements output.
+The same format as bin.dat.
+
+bin.proper.dat - PROPER orbital elements (binary) file.
+
+reorient.out - orientations of the spin axes of individual TPs:
+ 
+    TPid    time [Myr]     sx []       sy []       sz []       omega [rad/s]
+
+    1       0.0000000000   0.82594558  0.53949060  0.16359642  0.00050400
+    2       0.0000000000  -0.93794723  0.29564022 -0.18125083  0.00053700
+    3       0.0000000000  -0.16033208  0.98666137 -0.02815970  0.00038000
+    4       0.0000000000   0.06777069  0.51107231 -0.85686185  0.00021500
+    5       0.0000000000   0.81351000 -0.20008862  0.54604581  0.00035300
+    ...										! etc for other TPs and times
+
+
+dump_spin.dat - A dump file describing spin states (necessary for restarts),
+with the same structure as spin.in.
+
+dump_param.dat, dump_pl.dat, dump_tp.dat - the same files as in the
+original SWIFT package (with no modifications).
+
+
+In case there is a missing comment or documentation, one can always look
+DIRECTLY in the source files what quantities are actually output.
+
+
+
+MODIFIED SOURCE FILES from the original SWIFT package
+------------------------------------------------------------------------
+
+The changes are documented in the respective source files, of course,
+we only add a few comments here.
+
+
+getacch_tp.f - The calculation of test particles accelerations
+in heliocentric frame, added one call of the subroutine getacc_yarko.
+
+rmvs.inc - The include file for subroutines calculating close
+encounters (this file was not modified, it is only necessary for
+succesful compilation).
+
+rmvs3_chk.f - This subroutine checks the encounters between a test
+particle and massive bodies. We added a common block /hill/ to scale
+the Hill sphere factors individually for each planet (see subroutine
+io_init_yarko). E.g. we have to avoid "jumps" over the Mars Hill sphere
+in the case of a large integration timestep (30 days).
+
+rmvs3_step.f - The subroutine calculates one time step in heliocentric
+coordinates for both massive and test particles. The common block
+/times/ was added to the code due to assignment of the actual time
+in the getacc_yarko subroutine. 
+
+rmvs3_step_out.f - The same modification as in subroutine rmvs3_step.
+
+step_kdk_tp.f - The same modification as in subroutine rmvs3_step.
+
+swift.inc - The main include file for SWIFT (this file was not modified,
+it is only necessary for successful compilation).
+
+util_version.f - Additional information about the version of this code.
+
+
+
+NEW FILES and SUBROUTINES (some of them)
+------------------------------------------------------------------------
+
+discard_meana.f - Discard TP's according to their MEAN semimajor axis 
+(thus it depends on filtering parameters, see filter.in file). The
+elements are passed from filter_elmts_write.f to this subroutine
+in /mean_elements/ common block.
+
+disrupt.f - The subroutine simulates disruptions of asteroids, it randomly
+discards test particles from the run. The time step and mean-time of
+disruption (i.e. its probability) are given in input file yarko.in (see
+documentation therein).
+
+disrupt_write.f - Write log-file disrupt.out in case of any TP disruption.
+
+filter.inc - The include file for all filtering subroutines.
+
+getacc_yarko.f - The subroutine for the calculation of thermal
+accelerations in heliocentric frame. Both diurnal and seasonal variants
+of Yarkovsky effect are included in the code. Thermal parameters
+of test particles are passed in the common block /yarko/. Another
+common block /times/ serves an actual value of the independent variable
+(time) for the calculation of the non-local seasonal force.
+
+io_dump_spin.f - Create dump_spin.dat file with recent spin axes
+orientations.
+
+io_chk.f - Checks if the file already exits, otherwise stops.
+
+io_init_filter.f - The reading of filtering parameters from given file
+(see the file filer.in), pre-calculation of convolution filters A and B. 
+
+io_init_spin.f - Read in spin axes data and store them in common block
+/yarko/. Initial random-seed is also read from the input spin.in file.
+
+io_init_th.f - The reading of asteroids' thermal parameters,
+pre-calculation of parameters for getacc_yarko subroutine.
+
+io_init_yarko.f - Read yarko.in input file, see documentation therein.
+A lot of parameters is passed from/to other subroutines in common blocks:
+/radii/, /yarko/ and /hill/.
+
+io_write_filter.f - The subroutine accumulates the osculating elements
+of asteroids and planets in a buffer, than filters the data and writes
+the output to the real*4 binary file.
+
+io_read_hdr_r8.f, io_read_line_r8.f, io_write_frame_r8.f,
+io_write_hdr_r8.f, io_write_line_r8.f - Subroutines for unfiltered
+real*8 binary output (useful for precise restarting of SWIFT, time step
+for the output of osculating elements is usually 10 kyr).
+
+ran1.f - Random number generator taken from Numerical Recipes.
+
+reorient.f - The subroutine accounts for random spin axes reorientations
+(affecting the Yarkovsky force) and disruption of asteroids (it DOES
+randomly discard test particles). The time step and mean-time are
+given in input file yarko.in (see also documentation therein).
+
+reorient_write.f - Write log-file reorient.out in case of any spin axis
+reorientation.
+
+swift_mvs2_fp_ye_yorp.f - The main file, based on swift_rmvs3.f
+with following changes: added calls of subroutines which read
+the input thermal and filtering parameters, on-line filter the
+osculating elements and reorient the spin axes of asteroids.
+
+yarko_seasonal.f - The calculation of thermal parameters for
+getacc_yarko subroutine, which depends on osculating orbital elements.
+These elements are already calculated (approximately every two years)
+due to the filtering process (see io_write_filter.f and common block
+/elements/) and this subroutine is called just in these times.
+The only one 'fast' element (i.e. mean anomaly) is linearly interpolated
+(for this reason we need the common block /times/). In this sense the
+Yarkovsky subroutines depend on filtering subroutines! (But it
+eventually could be modified, let me know...)
+
+
+PUBLICATIONS in which we used this integrator
+------------------------------------------------------------------------
+
+Broz M., A. Morbidelli, The Eos family halo. Icarus, 223, 844, 2013.
+
+Broz M., A. Morbidelli, W.F. Bottke, J. Rozehnal, D. Vokrouhlicky,
+D. Nesvorny, Constraining the cometary flux through the asteroid belt
+during the late heavy bombardment, A&A, 551A, 117, 2013.
+
+Hanus J., M. Broz, J. Durech, et al. An anisotropic distribution
+of spin vectors in asteroid families. A&A, accepted, 2013.
+
+Broz M., D. Vokrouhlicky, A. Morbidelli, D. Nesvorny, W.F. Bottke,
+Did the Hilda collisional family form during the late heavy bombardment?
+MNRAS, 414, 2716, 2011.
+
+Broz M., J. Rozehnal, Eurybates - the only asteroid family among Trojans?
+MNRAS, 414, 565, 2011.
+
+
+------------------------------------------------------------------------
+end of README
+
+

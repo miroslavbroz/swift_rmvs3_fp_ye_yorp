@@ -1,0 +1,40 @@
+
+If you use this integrator in your work, please cite:
+
+  Broz M., D. Vokrouhlicky, A. Morbidelli, D. Nesvorny, W.F. Bottke,
+  Did the Hilda collisional family form during the late heavy bombardment?
+  MNRAS, 414, 2716, 2011.
+
+The computation of the YORP torques (included in this package!)
+is described in:
+
+  Capek D., D. Vokrouhlicky, The YORP effect with finite thermal conductivity,
+  Icarus, 172, 526, 2004.
+
+There is also a digital filter to compute proper elemets, which uses
+a subroutine written by D. Nesvorny:
+
+  Sidlichovsky M., D. Nesvorny, Frequency modified Fourier transform
+  and its applications to asteroids, Cel. Mech. Dyn. Astron., 65, 137, 1996.
+
+The analytical theory used to compute diurnal and seaonal variants
+of the Yarkovsky effects:
+
+  Vokrouhlicky, D. Diurnal Yarkovsky effect as a source of mobility
+  of meter-sized asteroidal fragments. I. Linear theory, A&A, 335, 1093, 1998.
+
+  Vokrouhlicky D., P. Farinella, The Yarkovsky Seasonal Effect on Asteroidal
+  Fragments: A Nonlinearized Theory for Spherical Bodies, AJ, 118, 3049
+
+
+(I am sorry for this excessively-long list of references,
+but several people contributed substantially to this code.
+Would you be so kind and cite at least first three?)
+
+
+We shall not forget to mention the original SWIFT integrator too:
+
+  Levison H., M.J. Duncan, The long-term dynamical behavior of
+  short-period comets, Icarus, 108, 18, 1994.
+
+

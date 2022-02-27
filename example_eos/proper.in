@@ -1,0 +1,80 @@
+## filename of output file
+bin.proper.dat
+
+## FILTER TYPE selection
+5	/* 0) switched off; 1) run. avg.; 2) run. min/max; 3) min. a/max. e; 4) representative surface; 6) dtto with mean elements; 5) FMFT (really 5!)
+
+## Write real*8 binary output instead of real*4? [T|F]
+F
+
+## sampling time-step should be an integer multiple of dtfilter!
+## (refer to filter.in file) - osculating elements are calculated
+## only every dtfilter (thus it is the maximum sampling rate)
+-1	/* sampling time-step [day], set to -1 for equal to dtfilter */
+
+## options for running-average filter
+1.0 	/* width of running window [Myr] */
+0.1  	/* output time-step [Myr] */
+
+## options for running-minimum/maximum filter of the given elements,
+## the output of others is for the respective time of min./max. -
+## ie. far from resonances, where a, e oscillations are NOT coupled,
+## it produces misleading results; the ABOVE running window options apply also!
+1	/* orbital element to be monitored: 1 a, 2 e, 3 inc, 4 node, 5 peri */
+T	/* T minimum, F maximum */
+
+## options for INDIVIDUAL minimum/maximum filter of a, e, i
+## (the above running window options apply also!)
+F	/* semimajor axis - T minimum, F maximum */
+F	/* eccentricty */
+F	/* inclination */
+
+## options for sigma & varpi-varpi_PL \simeq 0 filter (resonant elements)
+## a critical angle of an arbitrary resonance is:
+## sigma = (p+q)/q*lambda_PL - p/q*lambda_TP - varpi_TP
+-2	/* identification of the planet (PL id) */
+-1	/* p */
+0	/* q */
+60.	/* critical value of sigma [deg] */
+1.	/* max. value of abs(sigma-sigma_crit) [deg] */
+60.	/* critical value of varpi-varpi_PL */
+5.	/* maximal difference from ^^^, set to -1 to switch the check off! */
+180.	/* critical value of Omega-Omega_PL */
+-1.	/* max. diff. from ^, set to -1 to switch the check off! */
+-1	/* signum of d sigma/d t [-1|1], set to 0 to switch it off! */
+
+## the representative surface filter of MEAN elements does NOT have
+## separate options - they have to be set up in the FILTER.IN file
+## (namely PL_id, p and q); the remaining critical values and max.
+## differences are taken above
+
+## options for FMFT filter
+2	/* the variant of frequency analysis, see fmft.c */   
+10	/* number of computed frequencies */
+512	/* number of used data, must be a power of 2! */ 
+F	/* write `fmft.out' file with TPid, time, g and s frequencies (in arcsec/yr) */
+
+-1000.	/* minimum frequency (arcsec/yr), frequencies smaller than MIN_F are ignored */ 
+1000.  	/* maximum frequency */ 
+0.02	/* absolute value of the smallest allowed frequency */
+0.05	/* allowed difference between calculated and plan. freq., see below */
+7	/* number of (known, forced) planetary frequencies to be discarded */
+
+  4.25749319    /* list of plan. freq.: g5 */
+ 28.24552984    /* g6 */
+  3.08675577    /* g7 */
+  0.67255084    /* g8 */
+-26.34496354    /* s6 */
+ -2.99266093    /* s7 */
+ -0.69251386    /* s8 */
+
+-1000.	/* minimum g frequency (arcsec/yr), otherwise, it is considered planetary */
+1000.	/* maximum g */
+-1000.	/* minimum s */
+1000.	/* maximum s */
+F       /* add vectorially all frequencies matching the above criteria */
+F       /* drop intervals, where an interrupt (a longer time-step) occurs */
+T       /* calculate also proper elements of planets */
+F       /* write all frequencies, amplitudes and phases to `propgs.out' */
+
+

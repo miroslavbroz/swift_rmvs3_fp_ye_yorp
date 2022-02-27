@@ -1,0 +1,23 @@
+
+          if (IER.eq.2) then
+            write(*,*) 'yorp_evolve: Warning: obliq = ', obliq*DEGRAD,
+     :        ' deg'
+          endif
+
+        write(*,*) 'XP.gt.X(N) = ', XP.gt.X(N)
+        write(*,*) 'XP.lt.X(N) = ', XP.lt.X(1)
+        write(*,'(af26.20)') 'intep: XP   = ', XP
+        write(*,'(af26.20)') 'intep: X(1) = ', X(1)
+        write(*,'(af26.20)') 'intep: X(N) = ', X(N)
+
+          if (IER.eq.2) then
+            write(*,*) 'n = ', n
+            write(*,*) 's = ', s(1,i), s(2,i), s(3,i)
+            call normalize(s(1,i))
+            write(*,*) 's = ', s(1,i), s(2,i), s(3,i)
+            write(*,*) 'dot_product = ', dot_product3(n, s(1,i))
+            write(*,*) 'obliq = ', obliq*DEGRAD
+            write(*,*) 'obliq_func = ', obliq_func(0)*DEGRAD
+            write(*,*) 'obliq_func = ', obliq_func(nGDATA-1)*DEGRAD
+            stop
+          endif

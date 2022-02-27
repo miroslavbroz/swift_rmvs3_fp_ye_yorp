@@ -1,0 +1,16 @@
+1.0d3		! reorientation time step [yr], set to >tstop to switch off the reorientation of TP's
+84.5e3		! B [yr] in the relation: tau_reor = B (omega/omega_0)^beta_1 (D/D_0)^beta_2
+0.83333		! beta_1 []
+1.33333 	! beta_2 []
+2.0d0		! D_0 [m]
+3.4906585d-4	! omega_0 <=> P_0 = 5 hours
+1.0d10		! disruption time step [yr], set to >tstop to switch off the disruption of TP's
+16.79d6		! mean disruption time [yr]; particles ARE EXCLUDED from the integration!
+1 1 1 1		! NPL Hill sphere scaling factors of PL's for RMVS3 subroutines (excluding the Sun)
+2.5 9		! P_1, P_2 [hours]; interval of new periods after a reorientation (or exceeding of omega_crit)
+-1 -1		! a1, a2 [AU]; if ((a.lt.a1).or.(a.gt.a2)) discard the TP, a is MEAN semimajor axis (depends on filtering - see filter.in), set a1 or a2 to -1 to ignore this check
+T		! write reorient.out? [T|F] (but reorient them anyway)
+T		! write disrupt.out? [T|F] (but disrupt them anyway)
+
+
+
