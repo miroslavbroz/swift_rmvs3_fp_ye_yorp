@@ -27,7 +27,7 @@ c Date: Jan 19th 2010
 
       integer istat(NTPMAX,NSTAT),i1st
       integer nbod,ntp,nleft
-      integer iflgchk,iub,iuj,iud,iue,iuf,iur,iui,iup
+      integer iflgchk,iub,iuj,iud,iue,iuf,iur,iui,iup,iuy
       real*8 rstat(NTPMAX,NSTATR)
 
       real*8 t0,tstop,dt,dtout,dtdump,dtfilter,dtproper,dtreorient,
@@ -140,6 +140,7 @@ c io unit numbers
       iur = 80
       iui = 90
       iup = 75
+      iuy = 95
 
 c-----------------------------------------------------------------------
 c
@@ -287,6 +288,8 @@ c
      &        iuj,fopenstat)
           endif
 
+          call io_dump_spin('dump_spin.dat',ntp,iseed)
+
         endif
 
 c-----------------------------------------------------------------------
@@ -336,14 +339,12 @@ c Recompute all Yarkovsky parameters depending on omega!
           call omega_crit(ntp,omega_1,omega_2,iseed,istat)
           call yarko_omega(ntp,istat)
 
-          call io_dump_spin('dump_spin.dat',ntp,iseed)
-
           tyorp = tyorp + dtyorp
         endif
 
         if (t.ge.tyorpout) then
           if (btest(iflgchk,6)) then	! bit 6 is set
-            call reorient_write('reorient.out',t,ntp,istat,iur,
+            call reorient_write('yorp.out',t,ntp,istat,iuy,
      :        fopenstat)
           endif
 
@@ -358,14 +359,10 @@ c
           call reorient(t,ntp,dtreorient,tau_reor,beta_1,
      :      omega_1,omega_2,iseed,istat,reoriented)
 
-          if ((btest(iflgchk,6)).and.(reoriented)) then	! bit 6 is set
-            call reorient_write('reorient.out',t,ntp,istat,iur,
-     :        fopenstat)
-          endif
-
-          if (reoriented) then
-            call io_dump_spin('dump_spin.dat',ntp,iseed)
-          endif
+c          if ((btest(iflgchk,6)).and.(reoriented)) then	! bit 6 is set
+c            call reorient_write('reorient.out',t,ntp,istat,iur,
+c     :        fopenstat)
+c          endif
 
           treorient = treorient + dtreorient
         endif

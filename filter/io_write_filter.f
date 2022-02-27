@@ -140,6 +140,8 @@ c  calculate orbital elements for planets and test particles
       upflg_osc = .true.        ! update flag for io_write_proper.f subroutine
       FN(1)=FN(1)+1
       gm=mass(1)
+c      write(*,*) 'io_write_filter: time = ', time, ' FN = ', FN(1),
+c     :  FN(2), FN(3), FN(4)
 
 !$OMP PARALLEL DO
 !$OMP& PRIVATE (i, gm, id, ialpha, capa, e, inc, node, peri, capm,

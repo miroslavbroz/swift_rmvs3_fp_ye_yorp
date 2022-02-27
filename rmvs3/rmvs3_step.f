@@ -150,7 +150,6 @@ c...  do the integration
      &     vytmp,vztmp,xht,yht,zht,vxht,vyht,vzht,istat,ienc,dt,
      &     isperi,peri)
 
-
 c...  As of this point all the test particles that are involved in an
 c...  encounter have been moved.  But not the ones that have not.
 c...  so move those,  BUT NOT the onces in the encounter

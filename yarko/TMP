@@ -1,4 +1,17 @@
 
+          if (t.gt.1.5942934218300886d+07-9.13125d0) then
+            write(*,*) 'f1(1) = ', f1(1)
+            write(*,*) 'f1(2) = ', f1(2)
+            write(*,*) 'f1(3) = ', f1(3)
+          endif
+
+          if (t.gt.1.5942934218300886d+07-9.13125d0) then
+            write(*,*) 'ath = ', ath
+            write(*,*) 's0(1) = ', s0(1)
+            write(*,*) 's0(2) = ', s0(2)
+            write(*,*) 's0(3) = ', s0(3)
+          endif
+
           if (IER.eq.2) then
             write(*,*) 'yorp_evolve: Warning: obliq = ', obliq*DEGRAD,
      :        ' deg'

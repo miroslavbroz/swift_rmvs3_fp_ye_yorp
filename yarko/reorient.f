@@ -24,6 +24,7 @@ c Date: Apr 18th 2001
 
       include '../swift.inc'
       include 'spin.inc'
+      include 'yorp.inc'
 
 c  input
       integer ntp,iseed,istat(NTPMAX,NSTAT)
@@ -47,10 +48,8 @@ c  ignore reorientations if tau < 0
           p_reor = 1.d0 - exp(-dt/tau_reor)
           p = 1.0d0*ran1(iseed)
 
-c          write(*,*) 'tau_reor: ', t/365.25, dt/365.25,
-c     :      tau_reor/365.25, p_reor, p
-         
-          if (p.lt.p_reor) then     ! new random orientation of the spin axis
+c new random orientation of the spin axis
+          if (p.lt.p_reor) then
             reoriented = .true.
             s1 = TWOPI*ran1(iseed)
             sins2 = 2.0d0*ran1(iseed)-1.0d0
@@ -59,7 +58,14 @@ c     :      tau_reor/365.25, p_reor, p
             s(2,i) = sin(s1)*coss2
             s(3,i) = sins2
 
-            omega(i) = omega_1 + (omega_2-omega_1)*ran1(iseed)    ! change rotational periods too...
+c new random spin rate
+            omega(i) = omega_1 + (omega_2-omega_1)*ran1(iseed)
+
+c new Gaussian sphere (due to a change of shape)
+            if (gauss_rnd) then
+              fg_id(i) = int(1.0d0 + nGAUSS*ran1(iseed))
+              fg_id(i) = min(max(fg_id(i),1),nGAUSS)
+            endif
 
             write(*,*) 'reorient: Particle id = ', i, ' was reoriented!'
 
