@@ -19,6 +19,7 @@ c Date: Jan 19th 2010
 
       include '../swift.inc'
       include 'spin.inc'
+      include 'yorp.inc'
 
       character*(*) dspinfile
       integer ntp,iseed
@@ -34,7 +35,7 @@ c  main ----------------------------------------------------------
       write(7,*) 1
 
       do i=1,ntp
-        write(7,*) s(1,i),s(2,i),s(3,i), omega(i)
+        write(7,*) s(1,i),s(2,i),s(3,i), omega(i), fg_id(i)
       enddo
 
       close(unit=7)

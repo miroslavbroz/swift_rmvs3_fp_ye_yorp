@@ -8,8 +8,8 @@ set zeroaxis
 set xtics 30
 set mxtics 3
 
-p "<./intep_test.sh   1.y 0 180 1  1 3",\
-  "1.y" u 1:3
+p "<./intep_test.sh   1.y 0 180 1  1 3" w lp,\
+  "1.y" u 1:3 w lp
 pa -1
 
 set term png small

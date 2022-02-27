@@ -18,6 +18,7 @@ c Date: Jan 19th 2010
 
       include '../swift.inc'
       include 'spin.inc'
+      include 'yorp.inc'
 
       integer ntp,iu,istat(NTPMAX,NSTAT)
       real*8 t
@@ -42,8 +43,9 @@ c Date: Jan 19th 2010
 
       do i = 1,ntp
         if (istat(i,1).eq.0) then
-          write(iu,20) i, t/365.25d6, s(1,i),s(2,i),s(3,i), omega(i)
-20        format(i5,1x,f18.10,1x,4(1x,1f11.8))
+          write(iu,20) i, t/365.25d6, s(1,i),s(2,i),s(3,i), omega(i),
+     :      fg_id(i)
+20        format(i5,1x,f18.10,1x,4(1x,1f11.8),1x,i4)
         endif
       enddo
 

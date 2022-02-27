@@ -19,7 +19,7 @@ c temporary variables
       real*8 omega_c, P_1, P_2, P, omega_new
 
 c functions
-      real*8 ran1
+      real ran1
 
 c main
       P_1 = TWOPI/omega_1
