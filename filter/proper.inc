@@ -19,8 +19,7 @@ c  this requires `filter.inc' to be included also
       parameter (PMAXNTP=FMAXNTP)
 
 c  this have to be EXACTLY the same as in fmft.c!!!
-c      parameter (PMAXN=1024)		! max # of samples in buffer, have to be >=2^N due to FMFT!
-      parameter (PMAXN=4096)		! max # of samples in buffer, have to be >=2^N due to FMFT!
+      parameter (PMAXN=1024)		! max # of samples in buffer, have to be >=2^N due to FMFT!
 
 c  other parameteres in input file (and common block /proper/)
       integer prop_ftype, prop_ielmt, prop_plid, prop_p, prop_q,
