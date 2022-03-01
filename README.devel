@@ -1,0 +1,17 @@
+
+Issues:
+
+* Cybele problem: RMVS3 algorithm creates an artificial outward drift,
+if an orbit w. a ~ 3.4 au approaches the Hill sphere of Jupiter!!
+
+- occurs e > 0.15
+- increases for e ~ 0.25
+- works only for Jupiter!
+- independent of YE, YORP, or collisions!
+- a(t) is fixed for BS, MVS, Symba, ...
+- it's related to RHSCALE parameter
+- dt = 36.525 d -> 9.13125 d is ok!
+
+Solution: Use smaller dt to sample the RHSCALE * Hill sphere properly,
+or use BS, alternatively fully-symplectic Symba.
+

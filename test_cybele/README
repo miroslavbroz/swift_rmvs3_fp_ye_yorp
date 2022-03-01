@@ -1,0 +1,6 @@
+
+Cybele region, a = 3.42 au, e = 0.15.
+
+BEWARE!! For dt = 36.525 d, an artificial OUTWARD drift occurs
+due to poor sampling of RHSCALE * the Hill sphere of Jupiter.
+

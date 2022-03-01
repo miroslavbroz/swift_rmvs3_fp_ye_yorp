@@ -13,8 +13,7 @@ X(t) + iY(t) = Sum_j=1^N [ A_j * exp i (f_j * t + psi_j) ] */
 
 /* These two dimensions have to be EXACTLY the same as in proper.inc!!! */
 #define MAX_FMFT_NFREQ 100
-//#define MAX_FMFT_NDATA 1024
-#define MAX_FMFT_NDATA 4096
+#define MAX_FMFT_NDATA 1024
 
 /**********************************************************************/
 

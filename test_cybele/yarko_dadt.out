@@ -1,0 +1,49 @@
+ ----------------------------------------------------
+ YARKO_DADT version Jul 8th 2010
+ Author: Miroslav Broz, Charles University
+         e-mail: miroslav.broz@email.cz
+         http://sirrah.troja.mff.cuni.cz/~mira/mp/
+ ----------------------------------------------------
+ Enter name of parameter data file : 
+ Parameter data file is param.in                                                                        
+ t0,tstop,dt :    0.0000000000000000        730000000.00000000        18.262499999999999     
+ dtout,dtdump :    365250.00000000000        36525000.000000000     
+ F T F F T F  =           18
+ rmin,rmax,rmaxu,qmin,lclose :   4.6800000000000001E-003   100.00000000000000       -1.0000000000000000        4.6800000000000001E-003 F
+ outfile : bin.dat                                                                         
+  
+  
+ Enter name of planet data file : 
+ Planet data file is pl.in                                                                           
+
+Number of bodies (incl. the Sun) is   2
+For each, list mass 
+Followed by x,y,z,vx,vy,vz : 
+
+   2.9591397931969080E-004
+   0.0000000000000000        0.0000000000000000        0.0000000000000000     
+   0.0000000000000000        0.0000000000000000        0.0000000000000000     
+   2.8253459095242259E-007
+   4.7185892827054898       -1.4883655231148625        2.3568974416121789E-002
+   2.2597233338246671E-003   7.5948118925293472E-003   1.9944097501460164E-005
+ Enter name of test particle data file : 
+ Test particle file called tp.in                                                                           
+  
+ ntp :            2
+ Warning:  The size of istat and rstat arrays is 
+           not NSTAT=          53 , but is            1
+  
+  
+ Enter name of spin axes data file : 
+ Spin axes data file called spin.in                                                                         
+  
+ Enter name of Yarkovsky data file : 
+ Yarkovsky data file called yarko.in                                                                        
+  
+ Enter name of collision data file : 
+ Collisional data file called collision.in                                                                    
+  
+a [AU] e [] inc [deg]  R [m]      obliq. [deg]  T [h]        diurnal  seasonal  da/dt [AU/Myr] 
+==============================================================================================
+ 3.420 0.150   0.08     5000.000000    0.08     4.00000000  0.00006672 -0.00000000  0.00006672
+ 3.420 0.150   0.08     5000.000000  179.92     4.00000000 -0.00006672 -0.00000000 -0.00006672
