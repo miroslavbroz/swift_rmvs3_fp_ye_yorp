@@ -1,0 +1,4 @@
+bin.filter.dat
+follow.filter.out
+1	! 0=integer, 1=real*4, 2=real*8
+
