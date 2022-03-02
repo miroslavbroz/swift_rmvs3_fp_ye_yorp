@@ -1,1 +1,1 @@
-../../swift/rmvs/rmvs.inc
+../libswift/rmvs/rmvs.inc
