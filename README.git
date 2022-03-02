@@ -3,7 +3,7 @@ A few examples regarding the usage of git:
 
   git init
   git add .
-  git remote add origin https://miroslavbroz@github.com/miroslavbroz/xitau.git
+  git remote add origin git@github.com:miroslavbroz/swift_rmvs3_fp_ye_yorp.git
   git push -u origin master
   git push origin master
   git diff

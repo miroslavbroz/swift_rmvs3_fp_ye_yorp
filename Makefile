@@ -7,7 +7,7 @@ cc = gcc
 
 opt = -O3
 
-libswift = -lswift -L.
+lib = -lswift -L.
 
 obj = \
   io/io_close.o \
@@ -102,14 +102,17 @@ inc = \
 
 all: main/swift_rmvs3_fp_ye_yorp
 
-main/swift_rmvs3_fp_ye_yorp: main/swift_rmvs3_fp_ye_yorp.f $(obj) $(objc) $(inc)
-	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(libswift)
+main/swift_rmvs3_fp_ye_yorp: main/swift_rmvs3_fp_ye_yorp.f libswift.a $(obj) $(objc) $(inc)
+	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
 
 $(obj) : %.o:%.f $(inc)
 	$(f77) $(opt) -c -o $@ $<
 
 $(objc) : %.o:%.c
 	$(cc) $(opt) -c -o $@ $<
+
+libswift.a :
+	cd libswift; make
 
 clean : FORCE
 	rm -f $(obj) $(objc)

@@ -1,0 +1,11 @@
+
+c  cancelled factor exp(-imag(z)) in fraction psi(i) to avoid numerical problems
+          z = 1/sqrt(2.)*(1.,-1.)*Rdash
+          sinz = (cos(dble(z))+(0.,1.)*sin(dble(z))
+     &      -(cos(-dble(z))+(0.,1.)*sin(-dble(z)))*exp(2.*imag(z)))
+     &      /(0.,2.)
+          cosz = (cos(dble(z))+(0.,1.)*sin(dble(z))
+     &      +(cos(-dble(z))+(0.,1.)*sin(-dble(z)))*exp(2.*imag(z)))
+     &      /2.
+          psi(i) = ((z**2-3.)*sinz+3.*z*cosz)/(sinz-z*cosz)
+

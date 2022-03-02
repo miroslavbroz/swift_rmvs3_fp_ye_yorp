@@ -6,10 +6,6 @@ c
 c Author:  Hal Levison  
 c Date:    2/2/93
 c Last revision: 3/7/93
-c
-c Modified: Miroslav Broz, miroslav.broz@email.cz
-c Date: Oct 10th 2001
-
 
         implicit NONE    ! you got it baby
 
@@ -21,7 +17,6 @@ c...   Maximum array size
        integer  NPLMAX, NTPMAX
 c       parameter  (NPLMAX = 21)   ! max number of planets, including the Sun 
        parameter  (NPLMAX = 51)   ! max number of planets, including the Sun 
-c       parameter  (NTPMAX = 1001) ! max number of test particles
        parameter  (NTPMAX = 30001) ! max number of test particles
 
 c...   Size of the test particle integer status flag
@@ -53,21 +48,4 @@ c...    trig stuff
 	parameter (PIBY2 = PI/2.0D0)
 	parameter (DEGRAD = 180.0D0 / PI)
 
-c  number of steps in step_kdk_pl2, size of PL coordinates buffer
-      integer INTMAX
-      parameter (INTMAX = 3)
-
-c...  Coefficients of the 2nd order integrator of type SBAB
-      real*8 c_koef(INTMAX-1),d_koef(INTMAX)
-      data c_koef /0.5d0,
-     :             0.5d0/
-      data d_koef /0.16666666666666666667d0,
-     :             0.66666666666666666667d0,
-     :             0.16666666666666666667d0/
-
-c  functions
-      integer ibset
-      logical btest
-
 c-------------------------------------------------------------------------
-
