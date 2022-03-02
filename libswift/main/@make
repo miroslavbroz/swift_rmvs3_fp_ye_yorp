@@ -1,0 +1,15 @@
+#!/bin/csh
+
+# USERS MUST CHANGE THESE !!!!!!
+set SWIFT_DIR=~/a/swift/
+#set FORTRAN=g77
+set FORTRAN=gfortran
+set FFLAGS='-O3'
+
+foreach file (*.f)
+    echo $file | set file2=`awk -F"." '{print$1}'`
+    echo $file
+    $FORTRAN  $FFLAGS -o  $file2 $file ../libswift.a 
+end
+
+rm *.o
