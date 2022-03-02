@@ -1,7 +1,7 @@
 
 README
-A documentation of the SWIFT_MVS2_FP_YE_YORP integrator.
-Miroslav Broz, miroslav.broz@email.cz, Oct 8th 2013
+A documentation of the SWIFT_RMVS3_FP_YE_YORP integrator.
+Miroslav Broz, miroslav.broz@email.cz, Mar 2st 2022
 http://sirrah.troja.mff.cuni.cz/~mira/mp/
 ------------------------------------------------------------------------
 
@@ -188,7 +188,7 @@ spin.in - spin vector orientations and spin rates:
     ...								! etc for all TPs
 
 
-swift_mvs2_fp_ye_yorp.in - standard input of the integrator (list of input files):
+swift_rmvs3_fp_ye_yorp.in - standard input of the integrator (list of input files):
 
     param.in
     pl.in
@@ -247,7 +247,7 @@ OUTPUT FILES
 bin.dat - OSCULATING element output file.
 
 BEWARE! Might be in real*8 format, so to convert to ASCII you need
-to modify follow program (tools/follow2.f might be of help).
+to modify follow program (tools/follow2 might be of help).
 
 BEWARE! When using old/new binary files or files computed on
 different architectures, one may encounter little/big endian
@@ -259,7 +259,7 @@ The same format as bin.dat.
 
 bin.proper.dat - PROPER orbital elements (binary) file.
 
-reorient.out - orientations of the spin axes of individual TPs:
+yorp.out - orientations of the spin axes of individual TPs:
  
     TPid    time [Myr]     sx []       sy []       sz []       omega [rad/s]
 
@@ -403,10 +403,10 @@ Broz M., A. Morbidelli, The Eos family halo. Icarus, 223, 844, 2013.
 
 Broz M., A. Morbidelli, W.F. Bottke, J. Rozehnal, D. Vokrouhlicky,
 D. Nesvorny, Constraining the cometary flux through the asteroid belt
-during the late heavy bombardment, A&A, 551A, 117, 2013.
+during the late heavy bombardment, A&A, 551, A117, 2013.
 
-Hanus J., M. Broz, J. Durech, et al. An anisotropic distribution
-of spin vectors in asteroid families. A&A, accepted, 2013.
+Hanus J., M. Broz, J. Durech, et al., A spin vector distribution
+in asteroid families, A&A, 559, A134, 2013.
 
 Broz M., D. Vokrouhlicky, A. Morbidelli, D. Nesvorny, W.F. Bottke,
 Did the Hilda collisional family form during the late heavy bombardment?
