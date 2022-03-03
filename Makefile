@@ -16,6 +16,7 @@ obj = \
   io/io_write_line_r8.o \
   filter/bessi0.o \
   filter/dft.o \
+  filter/lsm.o \
   filter/filter_create.o \
   filter/filter_elmts.o \
   filter/filter_elmts_write.o \
@@ -29,7 +30,6 @@ obj = \
   filter/io_write_proper.o \
   filter/io_write_fmft.o \
   filter/io_write_fmft_propgs.o \
-  filter/lsm.o \
   filter/proper_fmft.o \
   filter/proper_minmax.o \
   filter/proper_minmax2.o \
@@ -38,6 +38,23 @@ obj = \
   filter/proper_sigma.o \
   filter/proper_sigma2.o \
   filter/proper_trojan.o \
+  filter2/filter_elmts_write_2ND.o \
+  filter2/fmft_call_2ND.o \
+  filter2/fmft_gsout_2ND.o \
+  filter2/io_init_filter_2ND.o \
+  filter2/io_init_proper_2ND.o \
+  filter2/io_write_filter_2ND.o \
+  filter2/io_write_fmft_2ND.o \
+  filter2/io_write_fmft_propgs_2ND.o \
+  filter2/io_write_proper_2ND.o \
+  filter2/proper_fmft_2ND.o \
+  filter2/proper_minmax2_2ND.o \
+  filter2/proper_minmax_2ND.o \
+  filter2/proper_runavg_2ND.o \
+  filter2/proper_shift_2ND.o \
+  filter2/proper_sigma2_2ND.o \
+  filter2/proper_sigma_2ND.o \
+  filter2/proper_trojan_2ND.o \
   misc/ang_eq.o \
   misc/ang_sgndot.o \
   misc/arr_avg.o \
@@ -99,16 +116,24 @@ inc = \
   filter/cb_meanel.inc \
   filter/cb_oscel.inc \
   filter/cb_propel.inc \
+  filter2/proper_2ND.inc \
+  filter2/cb_flt_2ND.inc \
+  filter2/cb_meanel_2ND.inc \
+  filter2/cb_oscel_2ND.inc \
+  filter2/cb_propel_2ND.inc \
   yarko/spin.inc \
   yarko/yarko.inc \
   yarko/yorp.inc \
 
-all: main/swift_rmvs3_fp_ye_yorp main/swift_mvs2_fp_ye_yorp
+all: main/swift_rmvs3_fp_ye_yorp main/swift_mvs2_fp_ye_yorp main/swift_mvs2_fp2
 
 main/swift_rmvs3_fp_ye_yorp: main/swift_rmvs3_fp_ye_yorp.f libswift.a $(obj) $(objc) $(inc)
 	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
 
 main/swift_mvs2_fp_ye_yorp: main/swift_mvs2_fp_ye_yorp.f libswift.a $(obj) $(objc) $(inc)
+	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
+
+main/swift_mvs2_fp2: main/swift_mvs2_fp2.f libswift.a $(obj) $(objc) $(inc)
 	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
 
 $(obj) : %.o:%.f $(inc)
