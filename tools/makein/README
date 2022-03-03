@@ -1,0 +1,6 @@
+Run example/makein.sh .
+
+Output is: pl.in, tp.in (in ecliptic reference frame)
+           pl_inv.in, tp_inv.in (in invariant plane)
+
+
