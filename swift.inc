@@ -11,7 +11,7 @@ c Modified: Miroslav Broz, miroslav.broz@email.cz
 c Date: Oct 10th 2001
 
 
-        implicit NONE    ! you got it baby
+       implicit NONE    ! you got it baby
 
 c...   Version of Swift
        real*8 VER_NUM

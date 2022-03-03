@@ -67,6 +67,8 @@ c!$    common /timing/ tbegin, tend
 c----
 c...  Executable code 
 
+      if (.not.use_yarko) return
+
 c!$    tend = omp_get_wtime()
 c!$    write(*,*) 'getacc_yarko begin: ', tend - tbegin, ' sec'
 

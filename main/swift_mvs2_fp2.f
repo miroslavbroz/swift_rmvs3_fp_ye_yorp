@@ -3,19 +3,21 @@ c SWIFT_MVS2_FP2.F
 c**********************************************************************
 c Integrator of the 2nd order SBAB2 (see Laskar & Robutel, 2000).
 c NO close encounters. To run, need 4 input files.
-c The code prompts for the file names, but examples are: param.in,
-c pl.in, tp.in, filter.in, proper.in
+c The code prompts for the file names, but examples are:
+c   param.in, pl.in, tp.in, filter.in, proper.in, filter2.in,
+c   proper2,in
 c
 c Authors:  Hal Levison \& Martin Duncan
 c Date:    8/25/94
 c Last revision: 12/27/96
-c
+
 c Remarks: Added filter/decimation process, real*8 output.
 c   on-line calculation of proper elements, 2nd filter.
 c Modified by: Miroslav Broz, miroslav.broz@email.cz
 c Date: Aug 19th 2008
      
       include 'swift.inc'
+      include '../yarko/yarko.inc'
 
       real*8 xht(NTPMAX),yht(NTPMAX),zht(NTPMAX)
       real*8 vxht(NTPMAX),vyht(NTPMAX),vzht(NTPMAX)
@@ -26,7 +28,7 @@ c Date: Aug 19th 2008
 
       integer istat(NTPMAX,NSTAT),i1st
       integer nbod,ntp,nleft
-      integer iflgchk,iub,iuj,iud,iue,iuf,iur,iui,iup,iuf2,iup2
+      integer iflgchk,iub,iuj,iud,iue,iuf,iup,iuf2,iup2
       real*8 rstat(NTPMAX,NSTATR)
 
       real*8 t0,tstop,dt,dtout,dtdump,dtfilter,dtproper,
@@ -37,9 +39,8 @@ c Date: Aug 19th 2008
       real*8 rmin,rmax,rmaxu,qmin,rplsq(NPLMAX)
       logical lclose 
 
-      character*80 outfile,inparfile,inplfile,intpfile,fopenstat,
-     &  infilterfile,outfilterfile,inproperfile,outproperfile,
-     &  infilterfile2,outfilterfile2,inproperfile2,outproperfile2
+      character*80 outfile,infile,fopenstat,outfilterfile,outproperfile,
+     &  outfilterfile2,outproperfile2
 
       character*32 DRIVER
       common /drivername/ DRIVER
@@ -49,48 +50,55 @@ c...    print version number
       DRIVER = "swift_mvs2_fp2"
       call util_version
 
+      use_yarko = .false.
+
+c-----------------------------------------------------------------------
+c
+c Read 7 input files
+c
+
 c Get data for the run and the test particles
       write(*,*) 'Enter name of parameter data file : '
-      read(*,999) inparfile
+      read(*,999) infile
 999   format(a)
-      call io_init_param(inparfile,t0,tstop,dt,dtout,dtdump,
+      call io_init_param(infile,t0,tstop,dt,dtout,dtdump,
      &  iflgchk,rmin,rmax,rmaxu,qmin,lclose,outfile,fopenstat)
 
 c Prompt and read name of planet data file
       write(*,*) ' '
       write(*,*) 'Enter name of planet data file : '
-      read(*,999) inplfile
-      call io_init_pl(inplfile,lclose,iflgchk,nbod,mass,xh,yh,zh,
+      read(*,999) infile
+      call io_init_pl(infile,lclose,iflgchk,nbod,mass,xh,yh,zh,
      &  vxh,vyh,vzh,rplsq,j2rp2,j4rp4)
 
 c Get data for the run and the test particles
       write(*,*) 'Enter name of test particle data file : '
-      read(*,999) intpfile
-      call io_init_tp(intpfile,ntp,xht,yht,zht,vxht,vyht,
+      read(*,999) infile
+      call io_init_tp(infile,ntp,xht,yht,zht,vxht,vyht,
      &  vzht,istat,rstat)
 
 c Prompt the name and read the filter parameters file
       write(*,*) 'Enter name of filter parameters file : '
-      read(*,999) infilterfile
-      call io_init_filter(infilterfile,nbod,ntp,dtfilter,
-     :  outfilterfile,iflgchk)
+      read(*,999) infile
+      call io_init_filter(infile,nbod,ntp,dtfilter,outfilterfile,
+     &  iflgchk)
 
 c Prompt the name and read the proper parameters file
       write(*,*) 'Enter name of proper parameters file : '
-      read(*,999) inproperfile
-      call io_init_proper(inproperfile,dtproper,outproperfile,
+      read(*,999) infile
+      call io_init_proper(infile,dtproper,outproperfile,
      :  iflgchk)
 
 c Prompt the name and read the 2nd filter parameters file
-      write(*,*) 'Enter name of filter parameters file : '
-      read(*,999) infilterfile2
-      call io_init_filter_2ND(infilterfile2,nbod,ntp,dtfilter2,
+      write(*,*) 'Enter name of filter2 parameters file : '
+      read(*,999) infile
+      call io_init_filter_2ND(infile,nbod,ntp,dtfilter2,
      :  outfilterfile2,iflgchk)
 
 c Prompt the name and read the 2nd proper parameters file
-      write(*,*) 'Enter name of proper parameters file : '
-      read(*,999) inproperfile2
-      call io_init_proper_2ND(inproperfile2,dtproper2,outproperfile2,
+      write(*,*) 'Enter name of proper2 parameters file : '
+      read(*,999) infile
+      call io_init_proper_2ND(infile,dtproper2,outproperfile2,
      :  iflgchk)
 
 c Initialize initial time and times for first output and first dump
@@ -109,13 +117,14 @@ c io unit numbers
       iud = 40
       iue = 60
       iuf = 70
-      iur = 80
-      iui = 90
       iup = 75
-      iuf2 = 76
-      iup2 = 77
+      iuf2 = 80
+      iup2 = 90
 
-c  initial io write ----------------------------------------------
+c-----------------------------------------------------------------------
+c
+c  Initial io write
+c
       if(btest(iflgchk,8))  then ! bit 8 is set
         call io_write_frame_r8(t0,nbod,ntp,mass,xh,yh,zh,
      &    vxh,vyh,vzh,xht,yht,zht,vxht,vyht,vzht,istat,outfile,iub,
@@ -153,7 +162,11 @@ c  for getacc_tp.f subroutine)
       nleft = ntp
       i1st = 0
 
-c***************here`s the big loop *************************************
+c=======================================================================
+
+c
+c  Here's the BIG integrator loop
+c
       write(*,*) ' ************** MAIN LOOP ****************** '
 
       do while ((t.le.tstop-eps).and.((ntp.eq.0).or.(nleft.gt.0)))
@@ -164,6 +177,10 @@ c***************here`s the big loop *************************************
 
         t = t + dt
 
+c-----------------------------------------------------------------------
+c
+c  Discard criteria
+c
         if(btest(iflgchk,4))  then    ! bit 4 is set
           call discard(t,dt,nbod,ntp,mass,xh,yh,zh,vxh,vyh,vzh,
      &      xht,yht,zht,vxht,vyht,vzht,rmin,rmax,rmaxu,
@@ -175,18 +192,21 @@ c***************here`s the big loop *************************************
           nleft = ntp
         endif
 
-c if it is time, output orb. elements, 
-        if(t.ge.tout-eps) then 
+c-----------------------------------------------------------------------
+c
+c Output osculating elements
+c
+        if (t.ge.tout-eps) then 
 
-          if (btest(iflgchk,8)) then          ! bit 8 is set (real*8 dump)
+          if (btest(iflgchk,8)) then  ! bit 8 is set (real*8 dump)
             call io_write_frame_r8(t,nbod,ntp,mass,xh,yh,zh,
      &        vxh,vyh,vzh,xht,yht,zht,vxht,vyht,vzht,istat,
      &        outfile,iub,fopenstat)
-          else if (btest(iflgchk,0)) then        ! bit 0 is set
+          else if (btest(iflgchk,0)) then  ! bit 0 is set
             call  io_write_frame(t,nbod,ntp,mass,xh,yh,zh,vxh,
      &        vyh,vzh,xht,yht,zht,vxht,vyht,vzht,istat,outfile,
      &        iub,fopenstat)
-          else if (btest(iflgchk,1)) then        ! bit 1 is set
+          else if (btest(iflgchk,1)) then  ! bit 1 is set
             call io_write_frame_r(t,nbod,ntp,mass,xh,yh,zh,
      &        vxh,vyh,vzh,xht,yht,zht,vxht,vyht,vzht,istat,
      &        outfile,iub,fopenstat)
@@ -195,8 +215,11 @@ c if it is time, output orb. elements,
           tout = tout + dtout
         endif
 
-c If it is time, do a dump
-        if(t.ge.tdump-eps) then
+c-----------------------------------------------------------------------
+c
+c Dump osculating elements
+c
+        if (t.ge.tdump-eps) then
 
           tfrac = (t-t0)/(tstop-t0)
           write(*,998) t,tfrac,nleft
@@ -222,10 +245,15 @@ c If it is time, do a dump
 
         endif
 
-c If it is time, save data to the filter buffer, if buffer is filled up,
-c write out filtered orbital elements of test particles.
+c-----------------------------------------------------------------------
+c
+c Mean elements
+c
+
+c Save data to the filter buffer, if buffer is filled up, write mean orbital elements.
 
         if (t.ge.tfilter-eps) then
+
           call io_write_filter(t,nbod,ntp,mass,xh,yh,zh,
      &      vxh,vyh,vzh,xht,yht,zht,vxht,vyht,vzht,istat,
      &      outfilterfile,iuf,fopenstat)
@@ -233,10 +261,15 @@ c write out filtered orbital elements of test particles.
           tfilter = tfilter + dtfilter
         endif
 
-c Check, if osculating or mean elemens have changed, fill the proper elements
-c buffer and eventually write the output.
+c-----------------------------------------------------------------------
+c
+c Proper elements
+c
+
+c Check, if osculating or mean elemens have changed, fill the proper elements buffer and eventually write the output.
 
         if (t.ge.tproper-eps) then
+
           call io_write_proper(t,nbod,ntp,istat,outproperfile,iup,
      :      fopenstat)
 
@@ -246,6 +279,7 @@ c buffer and eventually write the output.
 c The same for the 2nd filter.
 
         if (t.ge.tfilter2-eps) then
+
           call io_write_filter_2ND(t,nbod,ntp,mass,xh,yh,zh,
      &      vxh,vyh,vzh,xht,yht,zht,vxht,vyht,vzht,istat,
      &      outfilterfile2,iuf2,fopenstat)
@@ -254,6 +288,7 @@ c The same for the 2nd filter.
         endif
 
         if (t.ge.tproper2-eps) then
+
           call io_write_proper_2ND(t,nbod,ntp,istat,outproperfile2,iup2,
      :      fopenstat)
 
@@ -261,7 +296,10 @@ c The same for the 2nd filter.
         endif
 
       enddo
-c********** end of the big loop from time 't0' to time 'tstop'
+
+c end of the big loop from time 't0' to time 'tstop'
+
+c=======================================================================
 
 c  Do a final dump for possible resumption later 
 
@@ -272,7 +310,10 @@ c  Do a final dump for possible resumption later
       call io_dump_param('dump_param.dat',t,tstop,dt,dtout,
      &  dtdump,iflgchk,rmin,rmax,rmaxu,qmin,lclose,outfile)
 
+      call io_close(iub,iuf,iup)
       call util_exit(0)
+
       end    ! swift_mvs2_fp2.f
 c---------------------------------------------------------------------
+
 

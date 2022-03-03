@@ -1,0 +1,102 @@
+========================================================================
+f_slow = 0.0005 yr^-1 = 1/2000 yr
+<- lower frequencies (larger periods) than this have to be PRESERVED!
+
+passband_A <=> f/f_sampling < 0.005
+stopband_A <=>              > 0.05
+passband_B <=> f/f_sampling < 0.05
+stopband_B <=>              > 0.15
+ripple_A = 3.5e-05	, suppress_A = 1e-05
+ripple_B = 1e-09	, suppress_B = 1e-09
+========================================================================
+dt0 = 1 yr, f_sampling0 = 1 yr^-1
+filter no. 1 = A
+decimation factor K1 = 10
+f_slow = 0.0005 yr^-1 <= passband_A * f_sampling0 = 0.005 yr^-1
+Passband check passed OK.
+
+f_max0 = 0.05 yr^-1 = 1/20 yr
+dt1 = 10 yr
+f_sampling1 = 0.1 yr^-1 >= f_slow + f_max0 = 0.0505
+Aliasing check passed OK.
+
+------------------------------------------------------------------------
+dt1 = 10 yr, f_sampling1 = 0.1 yr^-1
+filter no. 2 = A
+decimation factor K2 = 10
+f_slow = 0.0005 yr^-1 <= passband_A * f_sampling1 = 0.0005 yr^-1
+Passband check passed OK.
+
+f_max1 = 0.005 yr^-1 = 1/200 yr
+dt2 = 100 yr
+f_sampling2 = 0.01 yr^-1 >= f_slow + f_max1 = 0.0055
+Aliasing check passed OK.
+
+------------------------------------------------------------------------
+dt2 = 100 yr, f_sampling2 = 0.01 yr^-1
+filter no. 3 = B
+decimation factor K3 = 3
+f_slow = 0.0005 yr^-1 <= passband_B * f_sampling2 = 0.0005 yr^-1
+Passband check passed OK.
+
+f_max2 = 0.0015 yr^-1 = 1/666.667 yr
+dt3 = 300 yr
+f_sampling3 = 0.00333333 yr^-1 >= f_slow + f_max2 = 0.002
+Aliasing check passed OK.
+
+------------------------------------------------------------------------
+
+========================================================================
+final sampling timestep dt = 300 yr
+
+final passband <=> f < 0.0005 yr^-1 <=> P > 2000 yr
+total ripple in the passband = 7.0001e-05
+
+final stopband <=> f > 0.0015 yr^-1 <=> P < 666.667 yr
+minimum suppression in the stopband = 1e-09
+
+========================================================================
+f_slow = 0.00666667 yr^-1 = 1/150 yr
+<- lower frequencies (larger periods) than this have to be PRESERVED!
+
+passband_A <=> f/f_sampling < 0.005
+stopband_A <=>              > 0.05
+passband_B <=> f/f_sampling < 0.05
+stopband_B <=>              > 0.15
+ripple_A = 3.5e-05	, suppress_A = 1e-05
+ripple_B = 1e-09	, suppress_B = 1e-09
+========================================================================
+dt0 = 1 yr, f_sampling0 = 1 yr^-1
+filter no. 1 = B
+decimation factor K1 = 3
+f_slow = 0.00666667 yr^-1 <= passband_B * f_sampling0 = 0.05 yr^-1
+Passband check passed OK.
+
+f_max0 = 0.15 yr^-1 = 1/6.66667 yr
+dt1 = 3 yr
+f_sampling1 = 0.333333 yr^-1 >= f_slow + f_max0 = 0.156667
+Aliasing check passed OK.
+
+------------------------------------------------------------------------
+dt1 = 3 yr, f_sampling1 = 0.333333 yr^-1
+filter no. 2 = B
+decimation factor K2 = 3
+f_slow = 0.00666667 yr^-1 <= passband_B * f_sampling1 = 0.0166667 yr^-1
+Passband check passed OK.
+
+f_max1 = 0.05 yr^-1 = 1/20 yr
+dt2 = 9 yr
+f_sampling2 = 0.111111 yr^-1 >= f_slow + f_max1 = 0.0566667
+Aliasing check passed OK.
+
+------------------------------------------------------------------------
+
+========================================================================
+final sampling timestep dt = 9 yr
+
+final passband <=> f < 0.0166667 yr^-1 <=> P > 60 yr
+total ripple in the passband = 2e-09
+
+final stopband <=> f > 0.05 yr^-1 <=> P < 20 yr
+minimum suppression in the stopband = 1e-09
+

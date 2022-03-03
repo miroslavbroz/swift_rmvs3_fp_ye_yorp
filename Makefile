@@ -133,7 +133,7 @@ main/swift_rmvs3_fp_ye_yorp: main/swift_rmvs3_fp_ye_yorp.f libswift.a $(obj) $(o
 main/swift_mvs2_fp_ye_yorp: main/swift_mvs2_fp_ye_yorp.f libswift.a $(obj) $(objc) $(inc)
 	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
 
-main/swift_mvs2_fp2: main/swift_mvs2_fp2.f libswift.a $(obj) $(objc) $(inc)
+main/swift_mvs2_fp2: main/swift_mvs2_fp2.f libswift.a filter2 $(obj) $(objc) $(inc)
 	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
 
 $(obj) : %.o:%.f $(inc)
@@ -144,6 +144,9 @@ $(objc) : %.o:%.c
 
 libswift.a :
 	cd libswift; make
+
+filter2 :
+	cd filter2; ./2nd.sh; cd ..
 
 clean : FORCE
 	rm -f $(obj) $(objc)

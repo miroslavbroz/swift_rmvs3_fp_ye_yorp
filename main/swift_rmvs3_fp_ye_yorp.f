@@ -17,6 +17,7 @@ c Modified by: Miroslav Broz, miroslav.broz@email.cz
 c Date: Jan 19th 2010
      
       include 'swift.inc'
+      include '../yarko/yarko.inc'
 
       real*8 xht(NTPMAX),yht(NTPMAX),zht(NTPMAX)
       real*8 vxht(NTPMAX),vyht(NTPMAX),vzht(NTPMAX)
@@ -60,6 +61,8 @@ c!$    tbegin = omp_get_wtime()
 c...    print version number
       DRIVER = "swift_rmvs3_fp_ye_yorp"
       call util_version
+
+      use_yarko = .true.
 
 c-----------------------------------------------------------------------
 c
@@ -243,15 +246,15 @@ c Output osculating elements
 c
         if (t.ge.tout) then 
 
-          if (btest(iflgchk,8)) then  	! bit 8 is set (real*8 dump)
+          if (btest(iflgchk,8)) then  ! bit 8 is set (real*8 dump)
             call io_write_frame_r8(t,nbod,ntp,mass,xh,yh,zh,
      &        vxh,vyh,vzh,xht,yht,zht,vxht,vyht,vzht,istat,
      &        outfile,iub,fopenstat)
-          else if (btest(iflgchk,0)) then	! bit 0 is set
+          else if (btest(iflgchk,0)) then  ! bit 0 is set
             call  io_write_frame(t,nbod,ntp,mass,xh,yh,zh,vxh,
      &        vyh,vzh,xht,yht,zht,vxht,vyht,vzht,istat,outfile,
      &        iub,fopenstat)
-          else if (btest(iflgchk,1)) then	! bit 1 is set
+          else if (btest(iflgchk,1)) then  ! bit 1 is set
             call io_write_frame_r(t,nbod,ntp,mass,xh,yh,zh,
      &        vxh,vyh,vzh,xht,yht,zht,vxht,vyht,vzht,istat,
      &        outfile,iub,fopenstat)

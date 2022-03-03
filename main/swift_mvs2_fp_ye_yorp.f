@@ -17,6 +17,7 @@ c Modified by: Miroslav Broz, miroslav.broz@email.cz
 c Date: Jan 19th 2010
      
       include 'swift.inc'
+      include '../yarko/yarko.inc'
 
       real*8 xht(NTPMAX),yht(NTPMAX),zht(NTPMAX)
       real*8 vxht(NTPMAX),vyht(NTPMAX),vzht(NTPMAX)
@@ -61,6 +62,8 @@ c...    print version number
       DRIVER = "swift_mvs2_fp_ye_yorp"
       call util_version
 
+      use_yarko = .true.
+
 c-----------------------------------------------------------------------
 c
 c Read 9 input files
@@ -69,6 +72,7 @@ c
 c Get data for the run and the test particles
       write(*,*) 'Enter name of parameter data file : '
       read(*,999) infile
+999   format(a)
       call io_init_param(infile,t0,tstop,dt,dtout,dtdump,
      &  iflgchk,rmin,rmax,rmaxu,qmin,lclose,outfile,fopenstat)
 
@@ -76,7 +80,6 @@ c Prompt and read name of planet data file
       write(*,*) ' '
       write(*,*) 'Enter name of planet data file : '
       read(*,999) infile
-999   format(a)
       call io_init_pl(infile,lclose,iflgchk,nbod,mass,xh,yh,zh,
      &  vxh,vyh,vzh,rplsq,j2rp2,j4rp4)
 
