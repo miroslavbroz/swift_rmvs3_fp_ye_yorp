@@ -62,6 +62,9 @@ obj = \
   mvs/drift/drift_tp.o \
   mvs/getacch/getacch_ah3_tp.o \
   mvs/getacch/getacch_tp.o \
+  mvs2/step_kdk2.o \
+  mvs2/step_kdk2_pl.o \
+  mvs2/step_kdk2_tp.o \
   rmvs3/rmvs3_chk.o \
   rmvs3/rmvs3_interp.o \
   rmvs3/rmvs3_step.o \
@@ -100,9 +103,12 @@ inc = \
   yarko/yarko.inc \
   yarko/yorp.inc \
 
-all: main/swift_rmvs3_fp_ye_yorp
+all: main/swift_rmvs3_fp_ye_yorp main/swift_mvs2_fp_ye_yorp
 
 main/swift_rmvs3_fp_ye_yorp: main/swift_rmvs3_fp_ye_yorp.f libswift.a $(obj) $(objc) $(inc)
+	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
+
+main/swift_mvs2_fp_ye_yorp: main/swift_mvs2_fp_ye_yorp.f libswift.a $(obj) $(objc) $(inc)
 	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
 
 $(obj) : %.o:%.f $(inc)

@@ -1,4 +1,10 @@
 
+2DO: 2nd mean & proper element filters for Trojans
+
+2DO: important filter improvements for Trojans
+
+--
+
 Issues:
 
 * Cybele problem: RMVS3 algorithm creates an artificial outward drift,
@@ -14,4 +20,7 @@ if an orbit w. a ~ 3.4 au approaches the Hill sphere of Jupiter!!
 
 Solution: Use smaller dt to sample the RHSCALE * Hill sphere properly,
 or use BS, alternatively fully-symplectic Symba.
+
+--
+
 

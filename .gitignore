@@ -7,3 +7,7 @@
 *.o
 *.mod
 
+# binary files
+main/swift_rmvs3_fp_ye_yorp
+main/swift_mvs2_fp_ye_yorp
+

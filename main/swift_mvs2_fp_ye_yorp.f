@@ -1,8 +1,8 @@
 c**********************************************************************
-c SWIFT_RMVS3_FP_YE_YORP.F
+c SWIFT_MVS2_FP_YE_YORP.F
 c**********************************************************************
-c Original integrator RMVS3.
-c Includes close encounters. To run, need 9 input files.
+c Integrator of the 2nd order SBAB2 (see Laskar & Robutel, 2000).
+c NO close encounters. To run, need 9 input files.
 c The code prompts for the file names, but examples are:
 c   param.in, pl.in, tp.in, filter.in, proper.in, spin.in, yarko.in,
 c   yorp.in, collision.in
@@ -58,7 +58,7 @@ c!$    common /timing/ tbegin, tend
 c!$    tbegin = omp_get_wtime()
 
 c...    print version number
-      DRIVER = "swift_rmvs3_fp_ye_yorp"
+      DRIVER = "swift_mvs2_fp_ye_yorp"
       call util_version
 
 c-----------------------------------------------------------------------
@@ -203,7 +203,7 @@ c
 
       do while ((t.le.tstop).and.((ntp.eq.0).or.(nleft.gt.0)))
 
-        call rmvs3_step(i1st,t,nbod,ntp,mass,j2rp2,j4rp4,
+        call step_kdk2(i1st,t,nbod,ntp,mass,j2rp2,j4rp4,
      &    xh,yh,zh,vxh,vyh,vzh,xht,yht,zht,vxht,vyht,
      &    vzht,istat,rstat,dt)
 
@@ -385,7 +385,7 @@ c  Do a final dump for possible resumption later
       call io_close(iub,iuf,iup)
       call util_exit(0)
 
-      end    ! swift_rmvs3_fp_ye_yorp.f
+      end    ! swift_mvs2_fp_ye_yorp.f
 c---------------------------------------------------------------------
 
 
