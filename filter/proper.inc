@@ -40,6 +40,7 @@ c  these 2 params have to be the same as in fmft.c!!!
       parameter (MAX_FMFT_FLAG = 3)		! size of FMFT output buffer
 
       integer fmft_flag, fmft_nfreq, fmft_ndata, fmft_nfreqknown
+      integer fmft_nfreqknown_g
       real*8 fmft_minf, fmft_maxf
       real*8 fmft_freqknown(MAX_FMFT_NFREQKNOWN), fmft_freqtoler,
      &  fmft_freqsmall

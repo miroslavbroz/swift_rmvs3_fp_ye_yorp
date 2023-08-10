@@ -29,10 +29,8 @@ c Nov 18th 2003: additonal parameters in proper-filter input file,
 c   namely required range of g and s frequencies and possible
 c   (vectorial) addition of output frequencies
 c Aug 25th 2006: adapted to SyMBA (which handles PLs only and no TPs)
-c Aug 14th 2008: added new (7th) filter for Trojans
 
-      subroutine io_write_proper(t,nbod,ntp,istat,oname,iu,
-     :  fopenstat)
+      subroutine io_write_proper(t,nbod,ntp,istat,oname,iu,fopenstat)
 
       include '../swift.inc'
       include 'filter.inc'
@@ -52,7 +50,7 @@ c  temporal variables
       save i1st,tstart,tstop
 
 c  data
-      data i1st,eps/0,1.d-8/
+      data i1st,eps/0,1.d-3/
 
 c=======================================================================
 c  ... executable code
@@ -78,7 +76,8 @@ c  try to open outfile (right at the beginning of the integration)
           write(*,*) '     Could not open binary output file:'
           call util_exit(1)
         endif
-        close(iu)
+c modified by Miroslav Broz (miroslav.broz@email.cz), Feb 12th 2008
+c        close(iu)
 
 c  initial values
         tstart = t
@@ -120,7 +119,7 @@ c
 
       elseif (prop_ftype.eq.7) then
 
-        call proper_trojan(t,tstart,tstop,nbod,ntp,istat,oname,iu)
+        call proper_orbfit(t,tstart,tstop,nbod,ntp,istat,oname,iu)
 
       endif     ! prop_ftype.eq.6
 

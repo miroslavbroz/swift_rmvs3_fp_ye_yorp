@@ -109,6 +109,16 @@ c  read input parameters
      :    ' (see proper.inc file)')
         call util_exit(1)
       endif
+
+      fmft_nfreqknown_g = read_i(iu,l)
+
+      if (fmft_nfreqknown_g.gt.fmft_nfreqknown) then
+        write(*,60) fmft_nfreqknown_g,fmft_nfreqknown
+60      format('Number of known g frequencies ',l6,' have to be smaller
+     :    than numer of all (g & s) frequencies ',l6)
+        call util_exit(1)
+      endif
+
       do i = 1, fmft_nfreqknown
         fmft_freqknown(i) = read_f(iu,l)
       enddo

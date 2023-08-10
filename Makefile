@@ -30,6 +30,7 @@ obj = \
   filter/io_write_proper.o \
   filter/io_write_fmft.o \
   filter/io_write_fmft_propgs.o \
+  filter/orbfit_tools.o \
   filter/proper_fmft.o \
   filter/proper_minmax.o \
   filter/proper_minmax2.o \
@@ -38,6 +39,7 @@ obj = \
   filter/proper_sigma.o \
   filter/proper_sigma2.o \
   filter/proper_trojan.o \
+  filter/proper_orbfit_IO.o \
   filter2/filter_elmts_write_2ND.o \
   filter2/fmft_call_2ND.o \
   filter2/fmft_gsout_2ND.o \
