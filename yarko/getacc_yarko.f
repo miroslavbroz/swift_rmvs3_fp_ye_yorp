@@ -55,6 +55,7 @@ c...  Internals:
       real*8 irht(NTPMAX)
       real*8 sin_theta_0,cos_theta_0,Tstar4,lambda,rho,n0(3),f1(3),
      &  ex(3),ey(3),x1,Tstar3,ath,n,l,kl,gms,s0(3)
+      real*8 a(3)
       complex*8 psi2
 
 cc  OMP functions
@@ -109,7 +110,7 @@ c
 c
 c  transformation to ecliptic coordinate frame
 c
-          if (sin_theta_0.ne.0) then
+          if (sin_theta_0.ne.0.d0) then
             x1 = 1.d0/sin_theta_0
             do k = 1,3
               ex(k) = (n0(k)-cos_theta_0*s(k,i))*x1
@@ -118,9 +119,13 @@ c
             ey(2) = (s0(3)*n0(1)-s0(1)*n0(3))*x1
             ey(3) = (s0(1)*n0(2)-s0(2)*n0(1))*x1
 
-            axht(i) = axht(i) + (ex(1)*f1(1)+ey(1)*f1(2)+s0(1)*f1(3))
-            ayht(i) = ayht(i) + (ex(2)*f1(1)+ey(2)*f1(2)+s0(2)*f1(3))
-            azht(i) = azht(i) + (ex(3)*f1(1)+ey(3)*f1(2)+s0(3)*f1(3))
+            a(1) = ex(1)*f1(1)+ey(1)*f1(2)+s0(1)*f1(3)
+            a(2) = ex(2)*f1(1)+ey(2)*f1(2)+s0(2)*f1(3)
+            a(3) = ex(3)*f1(1)+ey(3)*f1(2)+s0(3)*f1(3)
+          else
+            a(1) = 0.d0
+            a(2) = 0.d0
+            a(3) = 0.d0
           endif
 c
 c  Yarkovsky seasonal force
@@ -139,9 +144,18 @@ c  every dtfilter in yarko_seasonal.f
 
 c  seasonal thermal force is aligned with spin axis
 
-          axht(i) = axht(i) + ath * s0(1)
-          ayht(i) = ayht(i) + ath * s0(2)
-          azht(i) = azht(i) + ath * s0(3)
+          a(1) = a(1) + ath * s0(1)
+          a(2) = a(2) + ath * s0(2)
+          a(3) = a(3) + ath * s0(3)
+
+          if (.not.isnan(a(1))) then
+            axht(i) = axht(i) + a(1)
+            ayht(i) = ayht(i) + a(2)
+            azht(i) = azht(i) + a(3)
+          else
+            write(*,*) 'Warning: NaN in getacc_yarko!',
+     :        ' a close encounter with Vesta?'
+          endif
 
         endif ! istat
       enddo   ! ntp

@@ -117,7 +117,6 @@ c...  move the end positions to beginning
       do i=2,nbod
 
          do ib = 1,nt
-            
             call drift_one(msun,xc1(i),yc1(i),zc1(i),
      &           vxc1(i),vyc1(i),vzc1(i),dti,iflg)
             if(iflg.ne.0) then

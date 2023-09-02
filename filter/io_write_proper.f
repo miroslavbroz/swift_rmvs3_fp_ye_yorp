@@ -77,7 +77,7 @@ c  try to open outfile (right at the beginning of the integration)
           call util_exit(1)
         endif
 c modified by Miroslav Broz (miroslav.broz@email.cz), Feb 12th 2008
-c        close(iu)
+        close(iu)
 
 c  initial values
         tstart = t

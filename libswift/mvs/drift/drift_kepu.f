@@ -39,12 +39,12 @@ c----
 c...  Executable code 
 
         call drift_kepu_guess(dt,r0,mu,alpha,u,s)
-         
         st = s
 c..     store initial guess for possible use later in
 c..     laguerre's method, in case newton's method fails.
 
         call drift_kepu_new(s,dt,r0,mu,alpha,u,fp,c1,c2,c3,iflg)
+        
         if(iflg.ne.0) then
            call drift_kepu_fchk(dt,r0,mu,alpha,u,st,fo)
            call drift_kepu_fchk(dt,r0,mu,alpha,u,s,fn)

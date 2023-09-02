@@ -91,7 +91,7 @@ c...  Apply a heliocentric kick for a half dt
       call kickvh_tp(ntp,vxht,vyht,vzht,axht,ayht,azht,istat,dth) 
 
 c...  Take a drift forward full step
-      call drift_tp(ntp,mass(1),xht,yht,zht,vxht,vyht,vzht,dt,istat)	
+      call drift_tp(ntp,mass(1),xht,yht,zht,vxht,vyht,vzht,dt,istat)
 
 c...  Get the accelerations in helio frame.
       call getacch_tp(nbod,ntp,mass,j2rp2i,j4rp4i,xend,yend,zend,

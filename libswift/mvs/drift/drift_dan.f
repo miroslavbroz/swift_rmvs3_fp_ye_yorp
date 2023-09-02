@@ -57,7 +57,7 @@ c...  for new coords.
         v0s = vx0*vx0 + vy0*vy0 + vz0*vz0
         u = x0*vx0 + y0*vy0 + z0*vz0
         alpha = 2.0*mu/r0 - v0s
-        
+
 	if (alpha.gt.0.d0) then
            a = mu/alpha
            asq = a*a
@@ -67,6 +67,7 @@ c...  for new coords.
 	   esq = ec*ec + es*es
 	   dm = dt*en - int(dt*en/TWOPI)*TWOPI
 	   dt = dm/en
+
 	   if((dm*dm .gt. 0.16d0) .or. (esq.gt.0.36d0)) goto 100
 
 	   if(esq*dm*dm .lt. 0.0016) then

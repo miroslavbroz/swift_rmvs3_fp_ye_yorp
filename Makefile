@@ -5,7 +5,7 @@
 f77 = gfortran
 cc = gcc
 
-opt = -O3
+opt = -O3 -g -pg
 
 lib = -lswift -L.
 
@@ -39,7 +39,7 @@ obj = \
   filter/proper_sigma.o \
   filter/proper_sigma2.o \
   filter/proper_trojan.o \
-  filter/proper_orbfit_IO.o \
+  filter/proper_orbfit.o \
   filter2/filter_elmts_write_2ND.o \
   filter2/fmft_call_2ND.o \
   filter2/fmft_gsout_2ND.o \

@@ -16,7 +16,8 @@ c
       include 'cb_propel.inc'
 
       real*8 t,tstart,tstop
-      integer nbod,ntp,iu,istat(NTPMAX,NSTAT)
+      integer nbod,ntp,iu
+      integer istat(NTPMAX,NSTAT)
       character*(*) oname
 
       integer PN
@@ -43,8 +44,10 @@ c  ... executable code
 c      do i = 2, nbod
 c        id = -i
 c        prop_elmts(PN,1,id) = mean_elmts(1,id)
-c        prop_elmts(PN,2,id) = mean_elmts(6,id)
-c        prop_elmts(PN,3,id) = mean_elmts(7,id)
+c        prop_elmts(PN,2,id) = mean_elmts(2,id)
+c        prop_elmts(PN,3,id) = mean_elmts(3,id)
+c        prop_elmts(PN,4,id) = mean_elmts(4,id)
+c        prop_elmts(PN,5,id) = mean_elmts(5,id)
 c      enddo
 
       do i = 1, ntp
@@ -58,20 +61,19 @@ c      enddo
       enddo
 
 c  the buffer is filled-up => write the output
-      if (t.gt.tstop) then
+      if (PN.ge.fmft_ndata) then
 
-        tout = t - 0.5d0*prop_win - 0.5d0*FNinibuf*dtfilter
+!        tout = t - 0.5d0*prop_win - 0.5d0*FNinibuf*dtfilter
+        tout = t
 
-c        call io_open(iu,oname,'append','UNFORMATTED',ierr)
+        call io_open(iu,oname,'append','UNFORMATTED',ierr)
 
 c  2DO only use this until computation for planets is included as well !!!
 c  then go back to nbod
         nbodtmp = 0
         if (prop_writer8) then
-c          call io_write_hdr_r8(iu,tout,nbod,ntp,istat)
           call io_write_hdr_r8(iu,tout,nbodtmp,ntp,istat)
         else
-c          call io_write_hdr_r(iu,tout,nbod,ntp,istat)
           call io_write_hdr_r(iu,tout,nbodtmp,ntp,istat)
         endif
 
@@ -96,7 +98,6 @@ c  semimajor axis is simply a running average
 
             do j=1,PN
               times(j) = (prop_time(j) - 0.5d0*FNinibuf*dtfilter)/365.25d0
-c               times(j) = 0.0501206045*1.d6 + (j-1)*1500.d0
             enddo
 
 c  2DO - there is a large hack in OrbFit designed to deal with
@@ -120,7 +121,6 @@ c     eccentricities of Astraea. Should we implement it?
             period = TWOPI
             call orbfit_prop(varpi,k,h,PN,period,amp,ph)
             e = amp
-c            write(*,*) e
 
             do j=1,PN
               q(j) = prop_elmts(j,4,i)
@@ -133,10 +133,6 @@ c            write(*,*) e
               fforced(j) = fmft_freqknown(j+fmft_nfreqknown_g)
             enddo
 
-c            write(*,*) 'Some input values',q(1),q(PN),p(1),p(PN)
-c            write(*,*) times(1),times(PN)
-c            write(*,*) fforced(1),fforced(nfforced)
-c  all 2DOs below have to be applied for eccentricities as well
             call orbfit_forced(q,p,times,PN,fforced,nfforced)
 
             call orbfit_argum(q,p,times,PN,capom,freq)
@@ -144,8 +140,6 @@ c  2DO include an option to print s
             period = TWOPI
             call orbfit_prop(capom,q,p,PN,period,amp,ph)
             inc = 2.d0*asin(amp)
-c            write(*,*) inc*DEGRAD
-c            stop
 
             if (prop_writer8) then
               call io_write_line_r8(iu,i,capa,e,inc,0.0d0,0.0d0,0.0d0)
@@ -155,7 +149,7 @@ c            stop
           endif
         enddo
 
-c        close(iu)
+        close(iu)
 
 c  shift the prop_elmts buffer back in time
         call proper_shift(tstart,tstop,PN,nbod,ntp,

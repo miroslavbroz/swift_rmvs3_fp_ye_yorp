@@ -52,7 +52,7 @@ c Date: Mar 27th 1999
 
       subroutine rmvs3_step(i1st,time,nbod,ntp,mass,j2rp2,j4rp4,
      &     xh,yh,zh,vxh,vyh,vzh,xht,yht,zht,vxht,vyht,vzht,
-     &     istat,rstat,dt)	
+     &     istat,rstat,dt)
 
       include '../swift.inc'
       include '../rmvs/rmvs.inc'
@@ -95,13 +95,14 @@ c...  are there any encounters?
       rts = RHSCALE*RHSCALE
       call rmvs3_chk(nbod,ntp,mass,xh,yh,zh,vxh,vyh,vzh,xht,yht,
      &       zht,vxht,vyht,vzht,istat,dt,rts,icflg,nenc,itpenc,ienc)
-c...     nenc and itpenc not used here!
+c...  nenc and itpenc not used here!
 
-c.... if not just do a normal step and leave
-      t = time + dt		! should +dt be there??
+c...  if not just do a normal step and leave
+c...  should +dt be there??
+      t = time + dt
       if(icflg.eq.0) then
          call step_kdk(i1st,time,nbod,ntp,mass,j2rp2,j4rp4,xh,yh,zh,
-     &        vxh,vyh,vzh,xht,yht,zht,vxht,vyht,vzht,istat,rstat,dt)	
+     &        vxh,vyh,vzh,xht,yht,zht,vxht,vyht,vzht,istat,rstat,dt)
 
          do i=1,ntp
             if(istat(i,1).eq.0) then
@@ -127,7 +128,7 @@ c...  save initial x and v of planets if there are planocentric enc
 c... do a full step for the planets
       i1stpl = i1st
       call step_kdk_pl(i1stpl,nbod,mass,j2rp2,j4rp4,xh,yh,zh,
-     &     vxh,vyh,vzh,dt)	
+     &     vxh,vyh,vzh,dt)
 
 c...  save the final position and velocity of planets
       do i=1,nbod
@@ -175,7 +176,7 @@ c...  do a full step
       i1sto = 0      ! we need to recalculate accel arrays
       call step_kdk_tp(i1sto,nbod,ntp,mass,j2rp2,j4rp4,
      &              xbeg,ybeg,zbeg,xend,yend,zend,
-     &              xht,yht,zht,vxht,vyht,vzht,istattmp,dt)	
+     &              xht,yht,zht,vxht,vyht,vzht,istattmp,dt)
 
 c...  fix up the istat array
       do i=1,ntp

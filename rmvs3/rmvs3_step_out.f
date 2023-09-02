@@ -161,7 +161,7 @@ c...      remember the current position of the planets
           call rmvs3_step_out2(i1sttp,nbod,ntp,mass,j2rp2,j4rp4,
      &         xbegi,ybegi,zbegi,xendi,yendi,zendi,vxbegi,vybegi,
      &         vzbegi,vxendi,vyendi,vzendi,xht,yht,zht,
-     &         vxht,vyht,vzht,istattmp,dto,ienc,isperil,peril)	
+     &         vxht,vyht,vzht,istattmp,dto,ienc,isperil,peril)
 
           do j=1,ntp
              if(isperil(j).eq.0) then
@@ -176,7 +176,7 @@ c...      remember the current position of the planets
        enddo
 
 
-c...   Have to update istat just in case damby had problems
+c...  Have to update istat just in case damby had problems
       do i=1,ntp
          if( (ienc(i).ne.0) .and. (istattmp(i,1).ne.0) ) then
             istat(i,1) = 1       ! it had problems

@@ -38,7 +38,7 @@ c Last revision: 2/24/94
 
       subroutine step_kdk_tp(i1st,nbod,ntp,mass,j2rp2,j4rp4,
      &              xbeg,ybeg,zbeg,xend,yend,zend,
-     &              xht,yht,zht,vxht,vyht,vzht,istat,dt)	
+     &              xht,yht,zht,vxht,vyht,vzht,istat,dt)
 
       include '../../swift.inc'
 
@@ -76,7 +76,7 @@ c...  Apply a heliocentric kick for a half dt
       call kickvh_tp(ntp,vxht,vyht,vzht,axht,ayht,azht,istat,dth) 
 
 c...  Take a drift forward full step
-      call drift_tp(ntp,mass(1),xht,yht,zht,vxht,vyht,vzht,dt,istat)	
+      call drift_tp(ntp,mass(1),xht,yht,zht,vxht,vyht,vzht,dt,istat)
 
 c...  Get the accelerations in helio frame.
       call getacch_tp(nbod,ntp,mass,j2rp2,j4rp4,xend,yend,zend,

@@ -1,7 +1,21 @@
 
 --
 
-Issues:
+* Problem: A particle is discarded when:
+
+i) particle 1 is already discarded;
+ii) particle is in a close encouter (Vesta)^*;
+iii) Yarkovsky effect is miscalculated (NaN)^*;
+iv) Danby did not converge (NaN).
+
+^* Particles are reordered during encounters, so that their
+identifications (i) differ; getacc_yarko() isn't aware of it!
+Moreover, coordinates are Vesto-centric.
+
+Solution: isnan() test is used in getacc_yarko(), even though
+it's not a solution per se.
+
+--
 
 * Cybele problem: RMVS3 algorithm creates an artificial outward drift,
 if an orbit w. a ~ 3.4 au approaches the Hill sphere of Jupiter!!
