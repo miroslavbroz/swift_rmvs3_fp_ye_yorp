@@ -16,12 +16,12 @@ c  pre-calculated Yarkovsky parameters
      :  koefsin(MAXk_seasonal,NTPMAX), koefcos(MAXk_seasonal,NTPMAX)
       complex*8 psi(NTPMAX)
 
-      logical use_yarko
+      logical use_yarko, is_forward
 
 c  input/output thermal parameters in common block /yarko/
       common /yarko/
      :  R, rho_bulk, rho_surf, K_th, C_th, A_Bond, eps_IR,
      :  psi, lambda0, Tstar40, rho0, lambdas0, Rdash0,
-     :  thetas, rhos0, koefsin, koefcos, use_yarko
+     :  thetas, rhos0, koefsin, koefcos, use_yarko, is_forward
 
 

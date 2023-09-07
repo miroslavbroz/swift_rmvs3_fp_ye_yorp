@@ -25,10 +25,17 @@ c locals
       real*8 capa, e, inc, node, peri, capm
       real*8 tmp
       real*8 interpidx, dot_product3
+      real*8 pm
 
 c constants
       real*8 depsil_MAX
       parameter(depsil_MAX = 10.d0/DEGRAD)
+
+      if (is_forward) then
+        pm = 1.d0
+      else
+        pm = -1.d0
+      endif
 
       do i = 1,ntp
         if (istat(i,1).eq.0) then
@@ -60,7 +67,7 @@ c five scalings: with c_YORP, a, R, rho_bulk and also omega
 c 2DO: scale by rho_surface too, due to thermal effects!
 c (the day unit is here because of dt)
 
-          koef = c_YORP * (capa/a_0)**(-2) * (R(i)/R_0)**(-2)
+          koef = pm * c_YORP * (capa/a_0)**(-2) * (R(i)/R_0)**(-2)
      :      * (rho_bulk(i)/rho_0)**(-1) * day
 
           domega_dt = koef * f

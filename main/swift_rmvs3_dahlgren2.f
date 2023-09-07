@@ -1,8 +1,8 @@
 c**********************************************************************
-c SWIFT_MVS2_FP_YE_YORP.F
+c SWIFT_RMVS3_DAHLGREN2.F
 c**********************************************************************
-c Integrator of the 2nd order SBAB2 (see Laskar & Robutel, 2000).
-c NO close encounters. To run, need 9 input files.
+c Original integrator RMVS3.
+c Includes close encounters. To run, need 9 input files.
 c The code prompts for the file names, but examples are:
 c   param.in, pl.in, tp.in, filter.in, proper.in, spin.in, yarko.in,
 c   yorp.in, collision.in
@@ -15,6 +15,8 @@ c Remarks: Added thermal effects, YORP, filter/decimation process,
 c   real*8 output and on-line calculation of proper elements.
 c Modified by: Miroslav Broz, miroslav.broz@email.cz
 c Date: Jan 19th 2010
+
+c A version with close encounters wrt. a planet "wrt".
      
       include 'swift.inc'
       include '../yarko/yarko.inc'
@@ -28,7 +30,7 @@ c Date: Jan 19th 2010
 
       integer istat(NTPMAX,NSTAT),i1st
       integer nbod,ntp,nleft
-      integer iflgchk,iub,iuj,iud,iue,iuf,iur,iui,iup,iuy
+      integer iflgchk,iub,iuj,iud,iue,iuf,iur,iui,iup,iux,iuy
       real*8 rstat(NTPMAX,NSTATR)
 
       real*8 t0,tstop,dt,dtout,dtdump,dtfilter,dtproper,dtreorient,
@@ -59,7 +61,7 @@ c!$    common /timing/ tbegin, tend
 c!$    tbegin = omp_get_wtime()
 
 c...    print version number
-      DRIVER = "swift_mvs2_fp_ye_yorp"
+      DRIVER = "swift_rmvs3_fp_ye_yorp_dahlgren"
       call util_version
 
       use_yarko = .true.
@@ -73,7 +75,6 @@ c
 c Get data for the run and the test particles
       write(*,*) 'Enter name of parameter data file : '
       read(*,999) infile
-999   format(a)
       call io_init_param(infile,t0,tstop,dt,dtout,dtdump,
      &  iflgchk,rmin,rmax,rmaxu,qmin,lclose,outfile,fopenstat)
 
@@ -81,6 +82,7 @@ c Prompt and read name of planet data file
       write(*,*) ' '
       write(*,*) 'Enter name of planet data file : '
       read(*,999) infile
+999   format(a)
       call io_init_pl(infile,lclose,iflgchk,nbod,mass,xh,yh,zh,
      &  vxh,vyh,vzh,rplsq,j2rp2,j4rp4)
 
@@ -144,6 +146,7 @@ c io unit numbers
       iur = 80
       iui = 90
       iup = 75
+      iux = 85
       iuy = 95
 
 c-----------------------------------------------------------------------
@@ -207,7 +210,10 @@ c
 
       do while ((t.le.tstop).and.((ntp.eq.0).or.(nleft.gt.0)))
 
-        call step_kdk2(i1st,t,nbod,ntp,mass,j2rp2,j4rp4,
+        call dahlgren2(t,ntp,nbod,mass(1),xh,yh,zh,vxh,vyh,vzh,
+     :    xht,yht,zht,vxht,vyht,vzht,istat,iux)
+
+        call rmvs3_step(i1st,t,nbod,ntp,mass,j2rp2,j4rp4,
      &    xh,yh,zh,vxh,vyh,vzh,xht,yht,zht,vxht,vyht,
      &    vzht,istat,rstat,dt)
 
@@ -247,15 +253,15 @@ c Output osculating elements
 c
         if (t.ge.tout) then 
 
-          if (btest(iflgchk,8)) then  	! bit 8 is set (real*8 dump)
+          if (btest(iflgchk,8)) then  ! bit 8 is set (real*8 dump)
             call io_write_frame_r8(t,nbod,ntp,mass,xh,yh,zh,
      &        vxh,vyh,vzh,xht,yht,zht,vxht,vyht,vzht,istat,
      &        outfile,iub,fopenstat)
-          else if (btest(iflgchk,0)) then	! bit 0 is set
+          else if (btest(iflgchk,0)) then  ! bit 0 is set
             call  io_write_frame(t,nbod,ntp,mass,xh,yh,zh,vxh,
      &        vyh,vzh,xht,yht,zht,vxht,vyht,vzht,istat,outfile,
      &        iub,fopenstat)
-          else if (btest(iflgchk,1)) then	! bit 1 is set
+          else if (btest(iflgchk,1)) then  ! bit 1 is set
             call io_write_frame_r(t,nbod,ntp,mass,xh,yh,zh,
      &        vxh,vyh,vzh,xht,yht,zht,vxht,vyht,vzht,istat,
      &        outfile,iub,fopenstat)
@@ -389,7 +395,7 @@ c  Do a final dump for possible resumption later
       call io_close(iub,iuf,iup)
       call util_exit(0)
 
-      end    ! swift_mvs2_fp_ye_yorp.f
+      end    ! swift_rmvs3_fp_ye_yorp.f
 c---------------------------------------------------------------------
 
 

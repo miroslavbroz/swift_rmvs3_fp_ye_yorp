@@ -1,5 +1,5 @@
 c**********************************************************************
-c SWIFT_MVS2_FP_YE_YORP.F
+c SWIFT_MVS2_CONVERG2.F
 c**********************************************************************
 c Integrator of the 2nd order SBAB2 (see Laskar & Robutel, 2000).
 c NO close encounters. To run, need 9 input files.
@@ -15,9 +15,12 @@ c Remarks: Added thermal effects, YORP, filter/decimation process,
 c   real*8 output and on-line calculation of proper elements.
 c Modified by: Miroslav Broz, miroslav.broz@email.cz
 c Date: Jan 19th 2010
-     
+
+c A version with convergence of orbits wrt. the median orbit.
+
       include 'swift.inc'
       include '../yarko/yarko.inc'
+      include '../yarko/spin.inc'
 
       real*8 xht(NTPMAX),yht(NTPMAX),zht(NTPMAX)
       real*8 vxht(NTPMAX),vyht(NTPMAX),vzht(NTPMAX)
@@ -28,7 +31,7 @@ c Date: Jan 19th 2010
 
       integer istat(NTPMAX,NSTAT),i1st
       integer nbod,ntp,nleft
-      integer iflgchk,iub,iuj,iud,iue,iuf,iur,iui,iup,iuy
+      integer iflgchk,iub,iuj,iud,iue,iuf,iur,iui,iup,ius
       real*8 rstat(NTPMAX,NSTATR)
 
       real*8 t0,tstop,dt,dtout,dtdump,dtfilter,dtproper,dtreorient,
@@ -47,8 +50,11 @@ c  reorientation and disruption variables
       real*8 tau_reor(NTPMAX),tau_disr(NTPMAX),beta_1,
      :  omega_1,omega_2,a_mean1, a_mean2
 
+      logical is_restart
+      integer i
+
 c  name of this driver
-      character*32 DRIVER
+      character*16 DRIVER
       common /drivername/ DRIVER
 
 cc  OMP timings, debugging
@@ -59,11 +65,10 @@ c!$    common /timing/ tbegin, tend
 c!$    tbegin = omp_get_wtime()
 
 c...    print version number
-      DRIVER = "swift_mvs2_fp_ye_yorp"
+      DRIVER = "swift_mvs2_fp_ye"
       call util_version
 
       use_yarko = .true.
-      is_forward = .true.
 
 c-----------------------------------------------------------------------
 c
@@ -73,7 +78,6 @@ c
 c Get data for the run and the test particles
       write(*,*) 'Enter name of parameter data file : '
       read(*,999) infile
-999   format(a)
       call io_init_param(infile,t0,tstop,dt,dtout,dtdump,
      &  iflgchk,rmin,rmax,rmaxu,qmin,lclose,outfile,fopenstat)
 
@@ -81,6 +85,7 @@ c Prompt and read name of planet data file
       write(*,*) ' '
       write(*,*) 'Enter name of planet data file : '
       read(*,999) infile
+999   format(a)
       call io_init_pl(infile,lclose,iflgchk,nbod,mass,xh,yh,zh,
      &  vxh,vyh,vzh,rplsq,j2rp2,j4rp4)
 
@@ -124,6 +129,36 @@ c Read collisional parameters from file
      &  dtreorient,dtdisrupt,tau_reor,tau_disr,beta_1,
      &  omega_1,omega_2,a_mean1,a_mean2,iflgchk)
 
+      write(*,*) 'Enter is_forward : '
+      read(*,*) is_forward
+      write(*,*) 'Enter is_restart : '
+      read(*,*) is_restart
+
+      write(*,*) 'is_forward = ', is_forward
+      write(*,*) 'is_restart = ', is_restart
+
+c adjust velocities for backward integrations
+      if ((.not.is_forward).and.(.not.is_restart)) then
+        write(*,*) 'Note: all velocities (and spins) were negative!'
+        do i = 2,nbod
+          vxh(i) = -vxh(i)
+          vyh(i) = -vyh(i)
+          vzh(i) = -vzh(i)
+        enddo
+
+        do i = 1,ntp
+          vxht(i) = -vxht(i)
+          vyht(i) = -vyht(i)
+          vzht(i) = -vzht(i)
+        enddo
+
+        do i = 1,ntp
+          s(1,i) = -s(1,i)
+          s(2,i) = -s(2,i)
+          s(3,i) = -s(3,i)
+        enddo
+      endif
+
 c Initialize initial time and times for first output and first dump
       t = t0
       tout = t0 + dtout
@@ -144,7 +179,7 @@ c io unit numbers
       iur = 80
       iui = 90
       iup = 75
-      iuy = 95
+      ius = 95
 
 c-----------------------------------------------------------------------
 c
@@ -206,6 +241,8 @@ c
       write(*,*) ' ************** MAIN LOOP ****************** '
 
       do while ((t.le.tstop).and.((ntp.eq.0).or.(nleft.gt.0)))
+        call converg2(t,ntp,mass(1),xht,yht,zht,vxht,vyht,vzht,
+     :    istat,ius)
 
         call step_kdk2(i1st,t,nbod,ntp,mass,j2rp2,j4rp4,
      &    xh,yh,zh,vxh,vyh,vzh,xht,yht,zht,vxht,vyht,
@@ -292,8 +329,6 @@ c
      &        iuj,fopenstat)
           endif
 
-          call io_dump_spin('dump_spin.dat',ntp,iseed)
-
         endif
 
 c-----------------------------------------------------------------------
@@ -343,12 +378,14 @@ c Recompute all Yarkovsky parameters depending on omega!
           call omega_crit(ntp,omega_1,omega_2,iseed,istat)
           call yarko_omega(ntp,istat)
 
+          call io_dump_spin('dump_spin.dat',ntp,iseed)
+
           tyorp = tyorp + dtyorp
         endif
 
         if (t.ge.tyorpout) then
           if (btest(iflgchk,6)) then	! bit 6 is set
-            call reorient_write('yorp.out',t,ntp,istat,iuy,
+            call reorient_write('reorient.out',t,ntp,istat,iur,
      :        fopenstat)
           endif
 
@@ -363,10 +400,14 @@ c
           call reorient(t,ntp,dtreorient,tau_reor,beta_1,
      :      omega_1,omega_2,iseed,istat,reoriented)
 
-c          if ((btest(iflgchk,6)).and.(reoriented)) then	! bit 6 is set
-c            call reorient_write('reorient.out',t,ntp,istat,iur,
-c     :        fopenstat)
-c          endif
+          if ((btest(iflgchk,6)).and.(reoriented)) then	! bit 6 is set
+            call reorient_write('reorient.out',t,ntp,istat,iur,
+     :        fopenstat)
+          endif
+
+          if (reoriented) then
+            call io_dump_spin('dump_spin.dat',ntp,iseed)
+          endif
 
           treorient = treorient + dtreorient
         endif
@@ -389,7 +430,7 @@ c  Do a final dump for possible resumption later
       call io_close(iub,iuf,iup)
       call util_exit(0)
 
-      end    ! swift_mvs2_fp_ye_yorp.f
+      end    ! swift_mvs2_fp_ye.f
 c---------------------------------------------------------------------
 
 

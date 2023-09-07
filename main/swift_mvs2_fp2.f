@@ -51,6 +51,7 @@ c...    print version number
       call util_version
 
       use_yarko = .false.
+      is_forward = .true.
 
 c-----------------------------------------------------------------------
 c

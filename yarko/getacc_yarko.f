@@ -57,6 +57,7 @@ c...  Internals:
      &  ex(3),ey(3),x1,Tstar3,ath,n,l,kl,gms,s0(3)
       real*8 a(3)
       complex*8 psi2
+      real*8 pm
 
 cc  OMP functions
 c!$    logical omp_in_parallel
@@ -74,6 +75,12 @@ c!$    tend = omp_get_wtime()
 c!$    write(*,*) 'getacc_yarko begin: ', tend - tbegin, ' sec'
 
       gms = sqrt(mass(1))
+
+      if (is_forward) then
+        pm = 1.d0
+      else
+        pm = -1.d0
+      endif
 
 !$OMP PARALLEL DO
 !$OMP&  PRIVATE (i, n0, cos_theta_0, sin_theta_0, Tstar4, Tstar3,
@@ -119,9 +126,9 @@ c
             ey(2) = (s0(3)*n0(1)-s0(1)*n0(3))*x1
             ey(3) = (s0(1)*n0(2)-s0(2)*n0(1))*x1
 
-            a(1) = ex(1)*f1(1)+ey(1)*f1(2)+s0(1)*f1(3)
-            a(2) = ex(2)*f1(1)+ey(2)*f1(2)+s0(2)*f1(3)
-            a(3) = ex(3)*f1(1)+ey(3)*f1(2)+s0(3)*f1(3)
+            a(1) = pm*(ex(1)*f1(1)+ey(1)*f1(2)+s0(1)*f1(3))
+            a(2) = pm*(ex(2)*f1(1)+ey(2)*f1(2)+s0(2)*f1(3))
+            a(3) = pm*(ex(3)*f1(1)+ey(3)*f1(2)+s0(3)*f1(3))
           else
             a(1) = 0.d0
             a(2) = 0.d0
@@ -144,6 +151,7 @@ c  every dtfilter in yarko_seasonal.f
 
 c  seasonal thermal force is aligned with spin axis
 
+          ath = pm*ath
           a(1) = a(1) + ath * s0(1)
           a(2) = a(2) + ath * s0(2)
           a(3) = a(3) + ath * s0(3)
