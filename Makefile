@@ -88,6 +88,8 @@ obj = \
   rmvs3/rmvs3_interp.o \
   rmvs3/rmvs3_step.o \
   rmvs3/rmvs3_step_out.o \
+  rmvs4/rmvs4_step.o \
+  rmvs4/rmvs4_step_norm.o \
   util/util_version.o \
   yarko/discard_meana.o \
   yarko/disrupt.o \
@@ -127,7 +129,14 @@ inc = \
   yarko/yarko.inc \
   yarko/yorp.inc \
 
-all: main/swift_rmvs3_fp_ye_yorp main/swift_mvs2_fp_ye_yorp main/swift_mvs2_fp2
+all: \
+  main/swift_rmvs4_fp_ye_yorp \
+  main/swift_rmvs3_fp_ye_yorp \
+  main/swift_mvs2_fp_ye_yorp \
+  main/swift_mvs2_fp2
+
+main/swift_rmvs4_fp_ye_yorp: main/swift_rmvs4_fp_ye_yorp.f libswift.a $(obj) $(objc) $(inc)
+	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
 
 main/swift_rmvs3_fp_ye_yorp: main/swift_rmvs3_fp_ye_yorp.f libswift.a $(obj) $(objc) $(inc)
 	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
