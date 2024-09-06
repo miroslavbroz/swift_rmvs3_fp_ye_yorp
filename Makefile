@@ -15,6 +15,7 @@ obj = \
   converg/quicksort.o \
   dahlgren/dahlgren.o \
   dahlgren/dahlgren2.o \
+  dahlgren/dahlgren3.o \
   io/io_close.o \
   io/io_write_frame_r8_IO.o \
   io/io_write_hdr_r8.o \
@@ -138,11 +139,14 @@ all: \
   main/swift_rmvs4_fp_ye_yorp \
   main/swift_rmvs3_fp_ye_yorp \
   main/swift_mvs2_fp_ye_yorp \
+  main/swift_mvs2_fp \
   main/swift_mvs2_fp2 \
   main/swift_mvs2_converg \
   main/swift_mvs2_converg2 \
+  main/swift_rmvs3_fp \
   main/swift_rmvs3_dahlgren \
   main/swift_rmvs3_dahlgren2 \
+  main/swift_rmvs3_dahlgren3 \
 
 main/swift_rmvs4_fp_ye_yorp: main/swift_rmvs4_fp_ye_yorp.f libswift.a $(obj) $(objc) $(inc)
 	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
@@ -151,6 +155,9 @@ main/swift_rmvs3_fp_ye_yorp: main/swift_rmvs3_fp_ye_yorp.f libswift.a $(obj) $(o
 	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
 
 main/swift_mvs2_fp_ye_yorp: main/swift_mvs2_fp_ye_yorp.f libswift.a $(obj) $(objc) $(inc)
+	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
+
+main/swift_mvs2_fp: main/swift_mvs2_fp.f libswift.a $(obj) $(objc) $(inc)
 	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
 
 main/swift_mvs2_fp2: main/swift_mvs2_fp2.f libswift.a filter2 $(obj) $(objc) $(inc)
@@ -162,10 +169,16 @@ main/swift_mvs2_converg: main/swift_mvs2_converg.f libswift.a $(obj) $(objc) $(i
 main/swift_mvs2_converg2: main/swift_mvs2_converg2.f libswift.a $(obj) $(objc) $(inc)
 	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
 
+main/swift_rmvs3_fp: main/swift_rmvs3_fp.f libswift.a $(obj) $(objc) $(inc)
+	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
+
 main/swift_rmvs3_dahlgren: main/swift_rmvs3_dahlgren.f libswift.a $(obj) $(objc) $(inc)
 	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
 
 main/swift_rmvs3_dahlgren2: main/swift_rmvs3_dahlgren2.f libswift.a $(obj) $(objc) $(inc)
+	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
+
+main/swift_rmvs3_dahlgren3: main/swift_rmvs3_dahlgren3.f libswift.a $(obj) $(objc) $(inc)
 	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
 
 $(obj) : %.o:%.f $(inc)

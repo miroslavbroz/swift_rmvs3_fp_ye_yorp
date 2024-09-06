@@ -117,7 +117,8 @@ c check convergence
       Dvmin = Dv(1)
       Dvmax = Dv(j)
 
-      if (Dvmed.lt.vlimit/(au/day)) then
+!      if (Dvmed.lt.vlimit/(au/day)) then
+      if (Dvmin.lt.vlimit/(au/day)) then
         write(iu,*) time/365.25d6, Dvmed*(au/day), Dvmin*(au/day),
      :    Dvmax*(au/day), Dvori(what)*(au/day), j
       endif
