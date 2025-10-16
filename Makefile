@@ -97,6 +97,7 @@ obj = \
   rmvs3/rmvs3_step_out.o \
   rmvs4/rmvs4_step.o \
   rmvs4/rmvs4_step_norm.o \
+  tu4/tu4_getaccb_tp.o \
   util/util_version.o \
   yarko/discard_meana.o \
   yarko/disrupt.o \
@@ -140,6 +141,7 @@ all: \
   main/swift_rmvs4_fp_ye_yorp \
   main/swift_rmvs3_fp_ye_yorp \
   main/swift_mvs2_fp_ye_yorp \
+  main/swift_bs_fp_ye_yorp \
   main/swift_mvs2_fp \
   main/swift_mvs2_fp2 \
   main/swift_mvs2_converg \
