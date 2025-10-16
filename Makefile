@@ -5,7 +5,8 @@
 f77 = gfortran
 cc = gcc
 
-opt = -O3 -g -pg
+#opt = -O3 -g -pg
+opt = -O3 -g
 
 lib = -lswift -L.
 
@@ -155,6 +156,9 @@ main/swift_rmvs3_fp_ye_yorp: main/swift_rmvs3_fp_ye_yorp.f libswift.a $(obj) $(o
 	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
 
 main/swift_mvs2_fp_ye_yorp: main/swift_mvs2_fp_ye_yorp.f libswift.a $(obj) $(objc) $(inc)
+	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
+
+main/swift_bs_fp_ye_yorp: main/swift_bs_fp_ye_yorp.f libswift.a $(obj) $(objc) $(inc)
 	$(f77) $(opt) $(obj) $(objc) -o $@ $< $(lib)
 
 main/swift_mvs2_fp: main/swift_mvs2_fp.f libswift.a $(obj) $(objc) $(inc)

@@ -5,7 +5,8 @@
 f77 = gfortran
 cc = gcc
 
-opt = -O3 -g -pg
+#opt = -O3 -g -pg
+opt = -O3 -g
 
 obj = \
   anal/anal_energy.o \
